@@ -40,6 +40,12 @@ const adminSections = [
     href: '/admin/projects',
   },
   {
+    title: 'Partnerships',
+    description: 'Manage past partnerships with the same visual showcase and popup system.',
+    status: 'Live',
+    href: '/admin/partnerships',
+  },
+  {
     title: 'Clients',
     description: 'Manage client names, logos, categories, and feature status.',
     status: 'Live',

@@ -56,6 +56,24 @@ create table if not exists public.projects (
   sort_order integer not null default 0
 );
 
+create table if not exists public.partnerships (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  title text,
+  client_name text,
+  location text,
+  description text,
+  image_url text,
+  detail_html_url text,
+  gallery_images text[] not null default '{}',
+  service_tags text[] not null default '{}',
+  product_tags text[] not null default '{}',
+  completion_year text,
+  is_featured boolean not null default false,
+  is_published boolean not null default true,
+  sort_order integer not null default 0
+);
+
 create table if not exists public.clients (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
@@ -94,6 +112,7 @@ alter table public.timeline_entries enable row level security;
 alter table public.services enable row level security;
 alter table public.products enable row level security;
 alter table public.projects enable row level security;
+alter table public.partnerships enable row level security;
 alter table public.clients enable row level security;
 alter table public.testimonials enable row level security;
 alter table public.site_page_settings enable row level security;
@@ -102,6 +121,7 @@ drop policy if exists "Allow public read published timeline_entries" on public.t
 drop policy if exists "Allow public read published services" on public.services;
 drop policy if exists "Allow public read published products" on public.products;
 drop policy if exists "Allow public read published projects" on public.projects;
+drop policy if exists "Allow public read published partnerships" on public.partnerships;
 drop policy if exists "Allow public read published clients" on public.clients;
 drop policy if exists "Allow public read published testimonials" on public.testimonials;
 drop policy if exists "Allow public read site_page_settings" on public.site_page_settings;
@@ -110,6 +130,7 @@ drop policy if exists "Allow authenticated read timeline_entries" on public.time
 drop policy if exists "Allow authenticated read services" on public.services;
 drop policy if exists "Allow authenticated read products" on public.products;
 drop policy if exists "Allow authenticated read projects" on public.projects;
+drop policy if exists "Allow authenticated read partnerships" on public.partnerships;
 drop policy if exists "Allow authenticated read clients" on public.clients;
 drop policy if exists "Allow authenticated read testimonials" on public.testimonials;
 drop policy if exists "Allow authenticated read site_page_settings" on public.site_page_settings;
@@ -118,6 +139,7 @@ drop policy if exists "Allow authenticated insert timeline_entries" on public.ti
 drop policy if exists "Allow authenticated insert services" on public.services;
 drop policy if exists "Allow authenticated insert products" on public.products;
 drop policy if exists "Allow authenticated insert projects" on public.projects;
+drop policy if exists "Allow authenticated insert partnerships" on public.partnerships;
 drop policy if exists "Allow authenticated insert clients" on public.clients;
 drop policy if exists "Allow authenticated insert testimonials" on public.testimonials;
 drop policy if exists "Allow authenticated insert site_page_settings" on public.site_page_settings;
@@ -126,6 +148,7 @@ drop policy if exists "Allow authenticated update timeline_entries" on public.ti
 drop policy if exists "Allow authenticated update services" on public.services;
 drop policy if exists "Allow authenticated update products" on public.products;
 drop policy if exists "Allow authenticated update projects" on public.projects;
+drop policy if exists "Allow authenticated update partnerships" on public.partnerships;
 drop policy if exists "Allow authenticated update clients" on public.clients;
 drop policy if exists "Allow authenticated update testimonials" on public.testimonials;
 drop policy if exists "Allow authenticated update site_page_settings" on public.site_page_settings;
@@ -134,6 +157,7 @@ drop policy if exists "Allow authenticated delete timeline_entries" on public.ti
 drop policy if exists "Allow authenticated delete services" on public.services;
 drop policy if exists "Allow authenticated delete products" on public.products;
 drop policy if exists "Allow authenticated delete projects" on public.projects;
+drop policy if exists "Allow authenticated delete partnerships" on public.partnerships;
 drop policy if exists "Allow authenticated delete clients" on public.clients;
 drop policy if exists "Allow authenticated delete testimonials" on public.testimonials;
 drop policy if exists "Allow authenticated delete site_page_settings" on public.site_page_settings;
@@ -146,6 +170,8 @@ create policy "Allow public read published products"
 on public.products for select to anon using (is_published = true);
 create policy "Allow public read published projects"
 on public.projects for select to anon using (is_published = true);
+create policy "Allow public read published partnerships"
+on public.partnerships for select to anon using (is_published = true);
 create policy "Allow public read published clients"
 on public.clients for select to anon using (is_published = true);
 create policy "Allow public read published testimonials"
@@ -161,6 +187,8 @@ create policy "Allow authenticated read products"
 on public.products for select to authenticated using (true);
 create policy "Allow authenticated read projects"
 on public.projects for select to authenticated using (true);
+create policy "Allow authenticated read partnerships"
+on public.partnerships for select to authenticated using (true);
 create policy "Allow authenticated read clients"
 on public.clients for select to authenticated using (true);
 create policy "Allow authenticated read testimonials"
@@ -176,6 +204,8 @@ create policy "Allow authenticated insert products"
 on public.products for insert to authenticated with check (true);
 create policy "Allow authenticated insert projects"
 on public.projects for insert to authenticated with check (true);
+create policy "Allow authenticated insert partnerships"
+on public.partnerships for insert to authenticated with check (true);
 create policy "Allow authenticated insert clients"
 on public.clients for insert to authenticated with check (true);
 create policy "Allow authenticated insert testimonials"
@@ -191,6 +221,8 @@ create policy "Allow authenticated update products"
 on public.products for update to authenticated using (true) with check (true);
 create policy "Allow authenticated update projects"
 on public.projects for update to authenticated using (true) with check (true);
+create policy "Allow authenticated update partnerships"
+on public.partnerships for update to authenticated using (true) with check (true);
 create policy "Allow authenticated update clients"
 on public.clients for update to authenticated using (true) with check (true);
 create policy "Allow authenticated update testimonials"
@@ -206,6 +238,8 @@ create policy "Allow authenticated delete products"
 on public.products for delete to authenticated using (true);
 create policy "Allow authenticated delete projects"
 on public.projects for delete to authenticated using (true);
+create policy "Allow authenticated delete partnerships"
+on public.partnerships for delete to authenticated using (true);
 create policy "Allow authenticated delete clients"
 on public.clients for delete to authenticated using (true);
 create policy "Allow authenticated delete testimonials"

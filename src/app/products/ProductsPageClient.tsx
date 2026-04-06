@@ -33,7 +33,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       </div>
 
       {product.images.length > 1 && (
-        <div className="flex gap-2 px-4 pt-3">
+        <div className="hidden gap-2 px-4 pt-3 sm:flex">
           {product.images.map((img, idx) => (
             <button
               key={`${product.id}-${idx}`}
@@ -48,9 +48,9 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
       )}
 
-      <div className="p-4 pt-3">
-        <h3 className="mb-1 text-lg font-bold font-headline text-foreground">{product.name}</h3>
-        <p className="text-sm font-body leading-relaxed text-foreground/70">{product.description}</p>
+      <div className="p-3 pt-2.5 sm:p-4 sm:pt-3">
+        <h3 className="mb-1 text-[13px] font-bold font-headline text-foreground sm:text-lg">{product.name}</h3>
+        <p className="text-xs font-body leading-relaxed text-foreground/70 sm:text-sm">{product.description}</p>
       </div>
     </div>
   );
@@ -75,7 +75,7 @@ export default function ProductsPageClient({ initialProducts }: { initialProduct
         />
 
         <section className="container mx-auto px-4 py-16">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:grid-cols-3">
             {products.map((product, idx) => (
               <AnimatedSection key={`${product.id}-${isHydrated ? idx : 'initial'}`} animation="fade-up" delay={idx * 80}>
                 <ProductCard product={product} />

@@ -133,6 +133,12 @@
   * {
     @apply border-border;
   }
+
+  @media (max-width: 640px) {
+    html {
+      font-size: 88%;
+    }
+  }
   
   body {
     @apply bg-background text-foreground;
@@ -309,6 +315,21 @@
     background: linear-gradient(180deg, rgba(220, 38, 38, 0.05) 0%, #0d0d0d 100%) !important;
     border-bottom: 1px solid rgba(220, 38, 38, 0.12);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(220, 38, 38, 0.1);
+  }
+
+  .dark .site-header,
+  .dark .site-header-menu {
+    background: #070707 !important;
+    background-image: none !important;
+  }
+
+  .dark .site-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.72) !important;
+  }
+
+  .dark .site-header-menu {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
   }
 
   /* Primary buttons — red glow on hover */

@@ -158,7 +158,7 @@ const ClientTestimonials = ({ initialTestimonials = fallbackTestimonials }: Clie
             { value: 5000, suffix: '+', label: 'Projects Delivered', delay: 0 },
             { value: 200, suffix: '+', label: 'Happy Clients', delay: 100 },
             { value: 97, suffix: '%', label: 'Satisfaction Rate', delay: 200 },
-            { value: 11, suffix: '+', label: 'Years Experience', delay: 300 },
+            { value: 10, suffix: '+', label: 'Years Experience', delay: 300 },
           ].map((stat) => (
             <AnimatedSection key={stat.label} animation="zoom-in" delay={stat.delay} className="text-center">
               <CountUpStat

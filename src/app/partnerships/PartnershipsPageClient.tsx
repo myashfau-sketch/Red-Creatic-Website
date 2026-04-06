@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Header from '../../components/common/Header';
 import Footer from '../homepage/components/Footer';
-import Image from 'next/image';
 import Icon from '../../components/ui/AppIcon';
 import { PageHero, AnimatedSection } from '../../components/common/AnimatedSection';
 
@@ -22,7 +21,7 @@ export interface ProjectCardItem {
   images: { src: string; alt: string }[];
 }
 
-interface ProjectsPageClientProps {
+interface PartnershipsPageClientProps {
   initialProjects: ProjectCardItem[];
   productOptions: string[];
   serviceOptions: string[];
@@ -51,11 +50,11 @@ const ProjectCard = ({ project, onClick }: { project: ProjectCardItem; onClick: 
       className="group cursor-pointer overflow-hidden rounded-2xl bg-card shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       <div className="relative aspect-[16/10.5] overflow-hidden">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={project.images[activeImage].src}
           alt={project.images[activeImage].alt}
-          fill
-          className="object-contain bg-surface transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full object-contain bg-surface transition-transform duration-500 group-hover:scale-105"
         />
       </div>
       {project.images.length > 1 && (
@@ -73,9 +72,10 @@ const ProjectCard = ({ project, onClick }: { project: ProjectCardItem; onClick: 
                   ? 'border-primary shadow-sm'
                   : 'border-border/60 opacity-70 hover:opacity-100'
               }`}
-              aria-label={`View project image ${index + 1}`}
+              aria-label={`View partnership image ${index + 1}`}
             >
-              <Image src={image.src} alt={image.alt} fill className="object-contain bg-surface" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={image.src} alt={image.alt} className="h-full w-full object-contain bg-surface" />
             </button>
           ))}
         </div>
@@ -109,7 +109,33 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
   const [isLoadingHtml, setIsLoadingHtml] = useState(false);
   const [htmlError, setHtmlError] = useState<string | null>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [manualPauseUntil, setManualPauseUntil] = useState(0);
   const hasHtmlDetail = Boolean(project.detailHtmlUrl);
+
+  useEffect(() => {
+    setActiveImage(0);
+  }, [project.id]);
+
+  useEffect(() => {
+    if (project.images.length <= 1) return;
+
+    const interval = window.setInterval(() => {
+      if (Date.now() < manualPauseUntil) return;
+      setActiveImage((current) => (current + 1) % project.images.length);
+    }, 4500);
+
+    return () => window.clearInterval(interval);
+  }, [manualPauseUntil, project.id, project.images.length]);
+
+  const showPreviousImage = () => {
+    setManualPauseUntil(Date.now() + 5000);
+    setActiveImage((current) => (current - 1 + project.images.length) % project.images.length);
+  };
+
+  const showNextImage = () => {
+    setManualPauseUntil(Date.now() + 5000);
+    setActiveImage((current) => (current + 1) % project.images.length);
+  };
 
   useEffect(() => {
     let isCancelled = false;
@@ -163,7 +189,7 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
         }
       } catch (error) {
         if (!isCancelled) {
-          setHtmlError(error instanceof Error ? error.message : 'Failed to load project HTML.');
+          setHtmlError(error instanceof Error ? error.message : 'Failed to load partnership HTML.');
           setHtmlContent(null);
         }
       } finally {
@@ -213,7 +239,7 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
                 type="button"
                 onClick={() => setIsSidebarCollapsed((current) => !current)}
                 className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/95 text-foreground transition-colors hover:border-primary hover:text-primary"
-                aria-label={isSidebarCollapsed ? 'Open project overview' : 'Collapse project overview'}
+                aria-label={isSidebarCollapsed ? 'Open partnership overview' : 'Collapse partnership overview'}
               >
                 <Icon
                   name={isSidebarCollapsed ? 'ChevronRightIcon' : 'ChevronLeftIcon'}
@@ -224,17 +250,17 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
               {isSidebarCollapsed ? (
                 <div className="flex h-full items-center justify-center px-2">
                   <div className="writing-mode-vertical text-center text-[11px] uppercase tracking-[0.24em] text-primary/75 [writing-mode:vertical-rl] [transform:rotate(180deg)]">
-                    Project Overview
+                    Partnership Overview
                   </div>
                 </div>
               ) : (
                 <div className="h-full overflow-y-auto p-6">
                   <div className="relative aspect-[4/3] overflow-hidden rounded-[1.4rem] bg-surface">
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={project.images[activeImage].src}
                       alt={project.images[activeImage].alt}
-                      fill
-                      className="object-contain bg-surface"
+                      className="h-full w-full object-contain bg-surface"
                     />
                   </div>
                   <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
@@ -249,7 +275,8 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
                         }`}
                         aria-label={`View image ${idx + 1}`}
                       >
-                        <Image src={img.src} alt={img.alt} fill className="object-contain bg-surface" />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img.src} alt={img.alt} className="h-full w-full object-contain bg-surface" />
                       </button>
                     ))}
                   </div>
@@ -287,7 +314,7 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
             <div className="h-full bg-background">
               {isLoadingHtml ? (
                 <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                  Loading project page...
+                  Loading partnership page...
                 </div>
               ) : htmlError ? (
                 <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
@@ -303,7 +330,7 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
                 </div>
               ) : (
                 <iframe
-                  srcDoc={htmlContent ?? '<p>Project detail page is empty.</p>'}
+                  srcDoc={htmlContent ?? '<p>Partnership detail page is empty.</p>'}
                   title={`${project.title} detail page`}
                   className="block h-full w-full border-0 bg-white"
                   sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
@@ -312,79 +339,93 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
             </div>
           </div>
         ) : (
-          <div className="h-full overflow-y-auto md:overflow-hidden p-3 md:p-5">
-            <div className="grid min-h-full items-start gap-4 xl:h-full xl:min-h-0 xl:grid-cols-[0.95fr_1.05fr]">
+          <div className="h-full overflow-y-auto md:overflow-hidden p-4 md:p-5">
+            <div className="grid min-h-full items-stretch gap-4 xl:h-full xl:min-h-0 xl:grid-cols-[0.95fr_1.05fr]">
               <div className="hidden xl:flex h-full min-h-0 flex-col">
-                <div className="sticky top-0 flex flex-col">
-                  <div className="relative aspect-[1/0.9] w-full overflow-hidden rounded-[22px] border border-border/60 bg-surface">
-                    <Image
-                      src={project.images[activeImage].src}
-                      alt={project.images[activeImage].alt}
-                      fill
-                      className="object-contain bg-surface"
-                    />
-                  </div>
-
-                  <div className="mt-3 grid grid-cols-5 gap-2 w-full">
-                    {project.images.map((img, idx) => {
-                      const isActive = idx === activeImage;
-
-                      return (
-                        <button
-                          key={`${project.id}-${idx}`}
-                          type="button"
-                          onClick={() => setActiveImage(idx)}
-                          className={`relative aspect-square overflow-hidden rounded-[12px] border transition-all duration-200 ${
-                            isActive
-                              ? 'border-primary ring-2 ring-primary/25'
-                              : 'border-border/60 hover:border-primary/35'
+                <div className="sticky top-0 flex h-full min-h-[34rem] flex-1 flex-col">
+                  <div className="relative h-full min-h-[34rem] overflow-hidden rounded-[22px] border border-border/60 bg-surface">
+                    <div className="absolute inset-0">
+                      {project.images.map((image, index) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={`${project.id}-hero-bg-${index}`}
+                          src={image.src}
+                          alt={image.alt}
+                          className={`absolute inset-0 h-full w-full object-cover blur-xl scale-110 transition-all duration-700 ${
+                            index === activeImage ? 'opacity-30' : 'opacity-0'
                           }`}
-                          aria-label={`View image ${idx + 1}`}
-                        >
-                          <Image src={img.src} alt={img.alt} fill className="object-contain bg-surface" />
-                        </button>
-                      );
-                    })}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="relative h-full w-full overflow-hidden">
+                      <div
+                        className="flex h-full transition-transform duration-700 ease-out"
+                        style={{ transform: `translateX(-${activeImage * 100}%)` }}
+                      >
+                        {project.images.map((image, index) => (
+                          <div key={`${project.id}-hero-main-${index}`} className="relative h-full min-w-full">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={image.src}
+                              alt={image.alt}
+                              className="h-full w-full object-contain bg-surface p-3"
+                            />
+                          </div>
+                        ))}
+                      </div>
+
+                      {project.images.length > 1 && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={showPreviousImage}
+                            className="absolute left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/35 bg-black/35 text-white backdrop-blur-sm transition-all duration-200 hover:border-primary hover:bg-primary"
+                            aria-label="Previous image"
+                          >
+                            <Icon name="ChevronLeftIcon" size={18} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={showNextImage}
+                            className="absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/35 bg-black/35 text-white backdrop-blur-sm transition-all duration-200 hover:border-primary hover:bg-primary"
+                            aria-label="Next image"
+                          >
+                            <Icon name="ChevronRightIcon" size={18} />
+                          </button>
+
+                          <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 backdrop-blur-sm">
+                              {project.images.map((image, index) => (
+                                <button
+                                  key={`${project.id}-hero-dot-${index}`}
+                                  type="button"
+                                  onClick={() => {
+                                    setManualPauseUntil(Date.now() + 5000);
+                                    setActiveImage(index);
+                                  }}
+                                  className={`h-2.5 rounded-full transition-all duration-200 ${
+                                    index === activeImage
+                                      ? 'w-6 bg-primary'
+                                    : 'w-2.5 bg-white/65 hover:bg-white'
+                                }`}
+                                aria-label={`Show slide ${index + 1}`}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
+
                 </div>
               </div>
 
               <div className="h-full min-h-0 overflow-y-auto pr-1 md:pr-3">
                 <div className="space-y-5">
-                  <div className="xl:hidden rounded-[20px] border border-border/60 bg-surface p-3 sm:p-4">
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] border border-border/60 bg-surface">
-                      <Image
-                        src={project.images[activeImage].src}
-                        alt={project.images[activeImage].alt}
-                        fill
-                        className="object-contain bg-surface"
-                      />
-                    </div>
-                    {project.images.length > 1 && (
-                      <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5">
-                        {project.images.map((img, idx) => (
-                          <button
-                            key={`${project.id}-mobile-${idx}`}
-                            type="button"
-                            onClick={() => setActiveImage(idx)}
-                            className={`relative aspect-square overflow-hidden rounded-[12px] border transition-all duration-200 ${
-                              idx === activeImage
-                                ? 'border-primary ring-2 ring-primary/25'
-                                : 'border-border/60 hover:border-primary/35'
-                            }`}
-                            aria-label={`View image ${idx + 1}`}
-                          >
-                            <Image src={img.src} alt={img.alt} fill className="object-contain bg-surface" />
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
                   <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
                     <div>
                       <p className="mb-2 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
-                        Completed Project
+                        Featured Partnership
                       </p>
                       <h3 className="text-xl md:text-2xl font-semibold font-body text-foreground leading-tight">
                         {project.title}
@@ -395,77 +436,148 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
                       {project.description}
                     </p>
 
-                    {project.products.length > 0 && (
-                      <div className="mt-4">
-                        <p className="mb-3 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
-                          Product Outputs
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {project.products.map((product) => (
-                            <span
-                              key={product}
-                              className="rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-body text-foreground"
-                            >
-                              {product}
-                            </span>
+                  </div>
+
+                  <div className="xl:hidden rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
+                    <div className="relative overflow-hidden rounded-[18px] border border-border/60 bg-card">
+                      <div className="absolute inset-0">
+                        {project.images.map((image, index) => (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            key={`${project.id}-mobile-bg-${index}`}
+                            src={image.src}
+                            alt={image.alt}
+                            className={`absolute inset-0 h-full w-full object-cover blur-xl scale-110 transition-all duration-700 ${
+                              index === activeImage ? 'opacity-30' : 'opacity-0'
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      <div className="relative aspect-[4/3] w-full overflow-hidden">
+                        <div
+                          className="flex h-full transition-transform duration-700 ease-out"
+                          style={{ transform: `translateX(-${activeImage * 100}%)` }}
+                        >
+                          {project.images.map((image, index) => (
+                            <div key={`${project.id}-mobile-main-${index}`} className="relative h-full min-w-full">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={image.src}
+                                alt={image.alt}
+                                className="h-full w-full object-contain bg-surface p-3"
+                              />
+                            </div>
                           ))}
                         </div>
+
+                        {project.images.length > 1 && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={showPreviousImage}
+                              className="absolute left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/35 bg-black/35 text-white backdrop-blur-sm transition-all duration-200 hover:border-primary hover:bg-primary"
+                              aria-label="Previous image"
+                            >
+                              <Icon name="ChevronLeftIcon" size={18} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={showNextImage}
+                              className="absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/35 bg-black/35 text-white backdrop-blur-sm transition-all duration-200 hover:border-primary hover:bg-primary"
+                              aria-label="Next image"
+                            >
+                              <Icon name="ChevronRightIcon" size={18} />
+                            </button>
+
+                            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 backdrop-blur-sm">
+                              {project.images.map((image, index) => (
+                                <button
+                                  key={`${project.id}-mobile-dot-${index}`}
+                                  type="button"
+                                  onClick={() => {
+                                    setManualPauseUntil(Date.now() + 5000);
+                                    setActiveImage(index);
+                                  }}
+                                  className={`h-2.5 rounded-full transition-all duration-200 ${
+                                    index === activeImage
+                                      ? 'w-6 bg-primary'
+                                      : 'w-2.5 bg-white/65 hover:bg-white'
+                                  }`}
+                                  aria-label={`Show slide ${index + 1}`}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {(project.works.length > 0 || project.products.length > 0) && (
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {project.works.length > 0 && (
+                          <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
+                            <p className="mb-4 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
+                              Scope of Work
+                            </p>
+                            <div className="grid gap-3">
+                              {project.works.map((work, index) => (
+                                <div
+                                  key={`${work}-${index}`}
+                                  className="flex items-start gap-3 rounded-[18px] border border-border/60 bg-card px-3.5 py-3"
+                                >
+                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-[11px] font-semibold">
+                                    {index + 1}
+                                  </span>
+                                  <span className="text-sm font-body leading-6 text-foreground">{work}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {project.products.length > 0 && (
+                          <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
+                            <p className="mb-4 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
+                              Final Deliverables
+                            </p>
+                            <div className="grid gap-3">
+                              {project.products.map((product, index) => (
+                                <div
+                                  key={`${product}-${index}`}
+                                  className="flex items-start gap-3 rounded-[18px] border border-border/60 bg-card px-3.5 py-3"
+                                >
+                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-[11px] font-semibold">
+                                    {index + 1}
+                                  </span>
+                                  <span className="text-sm font-body leading-6 text-foreground">{product}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-
-                  <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
-                    <p className="mb-4 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
-                      Works Done
-                    </p>
-                    <div className="grid gap-3">
-                      {project.works.map((work, index) => (
-                        <div
-                          key={work}
-                          className="flex items-start gap-3 rounded-[18px] border border-border/60 bg-card px-3.5 py-3"
-                        >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-[11px] font-semibold">
-                            {index + 1}
-                          </span>
-                          <span className="text-sm font-body leading-6 text-foreground">{work}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 lg:grid-cols-2">
-                    <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
-                      <p className="mb-4 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
-                        Client & Location
-                      </p>
-                      <div className="space-y-3">
-                        <div className="flex items-start gap-3">
-                          <Icon name="UserIcon" size={16} className="text-primary shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{project.customer.name}</p>
-                            <p className="text-xs text-muted-foreground">Primary contact or client name</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <Icon name="MapPinIcon" size={16} className="text-primary shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{project.customer.location}</p>
-                            <p className="text-xs text-muted-foreground">Project location</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
                     <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
                       <p className="mb-4 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
-                        Year Completed
+                        Partnership Summary
                       </p>
-                      <div className="rounded-[18px] border border-border/60 bg-card px-3.5 py-3">
-                        <div className="flex items-start gap-3">
-                          <Icon name="CalendarDaysIcon" size={16} className="text-primary shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{project.customer.business}</p>
-                            <p className="text-xs text-muted-foreground">Completion year</p>
+                      <div className="rounded-[18px] border border-border/60 bg-card px-4 py-3.5">
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-foreground">
+                          <div className="flex items-center gap-2">
+                            <Icon name="UserIcon" size={16} className="text-primary shrink-0" />
+                            <span className="font-medium">{project.customer.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="MapPinIcon" size={16} className="text-primary shrink-0" />
+                            <span className="font-medium">{project.customer.location}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="CalendarDaysIcon" size={16} className="text-primary shrink-0" />
+                            <span className="font-medium">{project.customer.business}</span>
                           </div>
                         </div>
                       </div>
@@ -481,12 +593,12 @@ const ProjectModal = ({ project, onClose }: { project: ProjectCardItem; onClose:
   );
 };
 
-export default function ProjectsPageClient({
+export default function PartnershipsPageClient({
   initialProjects,
   productOptions,
   serviceOptions,
   yearOptions,
-}: ProjectsPageClientProps) {
+}: PartnershipsPageClientProps) {
   const [selectedProject, setSelectedProject] = useState<ProjectCardItem | null>(null);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -582,8 +694,8 @@ export default function ProjectsPageClient({
       <Header />
       <main className="pt-16">
         <PageHero
-          title="Our Projects"
-          subtitle="Real work, real clients. Explore our completed projects and see how we bring brands to life across the Maldives."
+          title="Our Partnerships"
+          subtitle="Explore the partnerships we have built over the years and see how we support brands, businesses, and organizations across the Maldives."
         />
 
         <section className="pb-16 pt-8">
@@ -601,7 +713,7 @@ export default function ProjectsPageClient({
                     className="min-w-0 flex-1 text-left transition-colors hover:text-primary"
                   >
                     <p className="text-[11px] uppercase tracking-[0.24em] text-primary/70">
-                      Filter Projects
+                      Filter Partnerships
                     </p>
                     <p className="truncate text-sm text-foreground">
                       {selectedCount === 0
@@ -743,8 +855,8 @@ export default function ProjectsPageClient({
               </div>
             ) : (
               <div className="py-16 text-center">
-                <h3 className="mb-2 text-xl font-semibold text-foreground">No projects found</h3>
-                <p className="text-sm text-muted-foreground">Try a different combination of services and years.</p>
+                <h3 className="mb-2 text-xl font-semibold text-foreground">No partnerships found</h3>
+                <p className="text-sm text-muted-foreground">Try a different combination of products, services, and years.</p>
               </div>
             )}
           </div>

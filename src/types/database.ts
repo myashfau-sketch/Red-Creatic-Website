@@ -66,6 +66,24 @@ export interface ProjectRecord {
   sort_order: number | null;
 }
 
+export interface PartnershipRecord {
+  id: string;
+  created_at: string;
+  title: string | null;
+  client_name: string | null;
+  location: string | null;
+  description: string | null;
+  image_url: string | null;
+  detail_html_url: string | null;
+  gallery_images: string[] | null;
+  service_tags: string[] | null;
+  product_tags: string[] | null;
+  completion_year: string | null;
+  is_featured: boolean | null;
+  is_published: boolean | null;
+  sort_order: number | null;
+}
+
 export interface ClientRecord {
   id: string;
   created_at: string;

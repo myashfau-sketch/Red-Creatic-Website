@@ -50,14 +50,14 @@ const SayHelloInteractive = () => {
         subtitle="Get in touch with Red Creatic - your trusted partner for printing and signage solutions in Maldives."
       />
 
-      <section className="py-12 md:py-16">
+      <section className="py-10 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
             {contactMethods.map((method) => (
               <a
                 key={method.label}
                 href={method.href}
-                className="bg-card rounded-lg shadow-card p-6 hover:shadow-interactive hover:-translate-y-1 transition-all duration-300 group"
+                className="bg-card rounded-lg p-5 shadow-card transition-all duration-300 group hover:-translate-y-1 hover:shadow-interactive sm:p-6"
               >
                 <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
                   <Icon
@@ -66,23 +66,23 @@ const SayHelloInteractive = () => {
                     className="text-primary group-hover:text-primary-foreground transition-colors duration-300"
                   />
                 </div>
-                <h3 className="font-bold font-headline text-foreground text-lg mb-2">
+                <h3 className="mb-1 text-sm font-bold font-headline text-foreground sm:mb-2 sm:text-lg">
                   {method.label}
                 </h3>
-                <p className="text-primary font-body font-semibold mb-1">{method.value}</p>
-                <p className="text-sm text-muted-foreground font-body">{method.description}</p>
+                <p className="mb-1 text-xs text-primary font-body font-semibold sm:text-base">{method.value}</p>
+                <p className="text-[11px] text-muted-foreground font-body leading-5 sm:text-sm">{method.description}</p>
               </a>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-surface">
+      <section className="bg-surface py-10 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-10 gap-8">
+          <div className="grid gap-6 lg:grid-cols-10 lg:gap-8">
             <div id="map" className="lg:col-span-7 bg-card rounded-lg shadow-card overflow-hidden">
               {!isHydrated ? (
-                <div className="w-full h-full min-h-[450px] bg-muted animate-pulse flex items-center justify-center">
+                <div className="flex h-full min-h-[320px] w-full items-center justify-center bg-muted animate-pulse sm:min-h-[450px]">
                   <Icon name="MapPinIcon" size={48} className="text-muted-foreground" />
                 </div>
               ) : (
@@ -90,7 +90,7 @@ const SayHelloInteractive = () => {
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.0769804522465!2d73.53712469999999!3d4.2052109!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b3f7effa5b44b27%3A0x33b080151ec9b87b!2sRed%20Creatic!5e0!3m2!1sen!2smv!4v1769078675868!5m2!1sen!2smv"
                   width="100%"
                   height="100%"
-                  style={{ border: 0, minHeight: '450px' }}
+                  style={{ border: 0, minHeight: '320px' }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -99,7 +99,7 @@ const SayHelloInteractive = () => {
               )}
             </div>
 
-            <div className="lg:col-span-3 bg-card rounded-lg shadow-card p-6 flex flex-col justify-center">
+            <div className="flex flex-col justify-center rounded-lg bg-card p-5 shadow-card sm:p-6 lg:col-span-3">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                   <Icon name="ClockIcon" size={20} className="text-primary" />
@@ -138,7 +138,7 @@ const SayHelloInteractive = () => {
         </div>
       </section>
 
-      <section className="py-12 md:py-16">
+      <section className="py-10 md:py-16">
         <div className="container mx-auto px-4 max-w-4xl">
           <FAQSection />
         </div>

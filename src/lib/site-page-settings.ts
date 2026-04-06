@@ -19,6 +19,7 @@ export const sitePageConfigs: SitePageConfig[] = [
   { slug: 'products', title: 'Products', path: '/products' },
   { slug: 'gallery', title: 'Gallery', path: '/gallery' },
   { slug: 'projects', title: 'Projects', path: '/projects' },
+  { slug: 'partnerships', title: 'Partnerships', path: '/partnerships' },
   { slug: 'clients', title: 'Clients', path: '/clients' },
   { slug: 'say-hello', title: 'Say Hello', path: '/say-hello' },
 ];

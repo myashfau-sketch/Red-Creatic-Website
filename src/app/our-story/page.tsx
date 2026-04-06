@@ -62,7 +62,7 @@ export default async function OurStoryPage({
     <>
       <ScrollToTopOnMount />
       <Header />
-      <main className="pt-16">
+      <main className="overflow-x-hidden pt-16">
         <PageHero
           title="Our Story"
           subtitle="Red Creatic embodies precision, creativity, and reliability in the printing and signage industry - the perfect fusion of modern technology with local Maldivian business understanding."

@@ -61,9 +61,9 @@ const WhatWeOfferInteractive = ({ initialServices = fallbackServices }: WhatWeOf
         subtitle="Comprehensive printing, fabrication, and branding solutions tailored for your business needs. Browse the services here, then open any one for a richer visual popup."
       />
 
-      <div className="py-16 px-4 sm:px-6 lg:px-8">
+      <div className="px-4 py-12 sm:px-6 md:py-16 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <AnimatedSection animation="fade-up" className="text-center mb-12">
+          <AnimatedSection animation="fade-up" className="mb-10 text-center md:mb-12">
             <p className="text-sm uppercase tracking-[0.18em] text-primary/80 font-body mb-3">
               Services
             </p>
@@ -75,7 +75,7 @@ const WhatWeOfferInteractive = ({ initialServices = fallbackServices }: WhatWeOf
             </p>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="mb-14 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
             {services.map((service, idx) => (
               <AnimatedSection key={service.id} animation="fade-up" delay={idx * 50}>
                 <ServiceCard service={service} onOpenModal={handleOpenModal} />

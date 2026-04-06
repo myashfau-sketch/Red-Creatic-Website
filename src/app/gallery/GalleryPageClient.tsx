@@ -103,7 +103,7 @@ export default function GalleryPageClient({
   const hasMoreItems = visibleCount < shuffledItems.length;
   const selectedCount = selectedServices.length + selectedProducts.length;
   const currentColumnCount = useMemo(() => {
-    if (viewportWidth < 640) return 2;
+    if (viewportWidth < 640) return 3;
     if (viewportWidth < 1024) return Math.min(Math.max(zoomLevel - 1, 2), 4);
     if (viewportWidth < 1280) return Math.min(Math.max(zoomLevel, 3), 6);
     return zoomLevel;
@@ -288,12 +288,12 @@ export default function GalleryPageClient({
               className={isFullscreenMode ? 'px-4 py-4' : 'container mx-auto px-4 py-5'}>
               <div
                 ref={dropdownRef}
-                className={`mx-auto overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm transition-all ${
+                className={`mx-auto overflow-hidden rounded-[1.6rem] border border-border bg-card shadow-sm transition-all sm:rounded-[2rem] ${
                   isFullscreenMode ? 'max-w-none duration-700' : 'max-w-7xl duration-300'
                 } ${isFilterOpen ? 'pb-4' : ''}`}>
                 <div
-                  className={`flex items-center justify-between ${
-                    isFullscreenMode ? 'min-h-12 px-4 py-2.5' : 'min-h-14 px-5 py-3'
+                  className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-3 ${
+                    isFullscreenMode ? 'min-h-12 px-4 py-2.5' : 'min-h-14 px-4 py-3 sm:px-5'
                   }`}>
                   <button
                     type="button"
@@ -308,7 +308,7 @@ export default function GalleryPageClient({
                         : `${selectedServices.length} service${selectedServices.length === 1 ? '' : 's'} and ${selectedProducts.length} product${selectedProducts.length === 1 ? '' : 's'} selected`}
                     </p>
                   </button>
-                  <div className="ml-4 flex items-center gap-3">
+                  <div className="ml-auto flex items-center gap-2 sm:gap-3">
                     {!isFullscreenMode && (
                       <button
                         type="button"
@@ -357,7 +357,7 @@ export default function GalleryPageClient({
                           setSelectedServices([]);
                           setSelectedProducts([]);
                         }}
-                        className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary">
+                        className="rounded-full border border-border px-2.5 py-1 text-[10px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary sm:text-[11px]">
                         Clear All Filters
                       </button>
                     )}

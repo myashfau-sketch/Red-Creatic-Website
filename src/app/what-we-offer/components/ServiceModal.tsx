@@ -89,10 +89,10 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
   if (!isOpen || !service) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm p-4 md:p-6 animate-fade-in">
+    <div className="fixed inset-0 z-50 bg-black/60 p-2 backdrop-blur-sm animate-fade-in sm:p-4 md:p-6">
       <div className="flex items-center justify-center min-h-full">
-        <div className="bg-card rounded-[24px] shadow-modal max-w-6xl w-full h-[70vh] overflow-hidden animate-slide-up border border-border/60">
-          <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-md border-b border-border/60 px-4 py-3.5 md:px-5 md:py-3.5 flex items-center justify-between">
+        <div className="w-full max-w-6xl overflow-hidden rounded-[20px] border border-border/60 bg-card shadow-modal animate-slide-up md:rounded-[24px] h-[88vh] sm:h-[82vh] md:h-[70vh]">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/60 bg-card/95 px-3 py-3 backdrop-blur-md sm:px-4 sm:py-3.5 md:px-5 md:py-3.5">
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <Icon name={service.icon as any} size={18} className="text-primary" />
@@ -116,8 +116,8 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
             </button>
           </div>
 
-          <div className="h-[calc(70vh-68px)] overflow-hidden p-4 md:p-4.5 lg:p-5">
-            <div className="grid h-full min-h-0 xl:grid-cols-[0.88fr_1.12fr] gap-4 items-start">
+          <div className="h-[calc(88vh-60px)] overflow-hidden p-3 sm:h-[calc(82vh-68px)] sm:p-4 md:h-[calc(70vh-68px)] md:p-4.5 lg:p-5">
+            <div className="grid h-full min-h-0 items-start gap-3 xl:grid-cols-[0.88fr_1.12fr] md:gap-4">
               <div className="hidden xl:flex h-full min-h-0 flex-col">
                 <div className="sticky top-0 flex flex-col">
                   <div className="relative overflow-hidden rounded-[22px] border border-border/60 bg-surface aspect-[1/0.9] w-full">
@@ -162,7 +162,7 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
 
               <div className="h-full min-h-0 overflow-y-auto pr-1 md:pr-3">
                 <div className="space-y-5">
-                  <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
+                  <div className="rounded-[20px] border border-border/60 bg-surface p-4 md:rounded-[22px] md:p-5">
                     <div>
                       <p className="text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body mb-2">
                         Crafted Service
@@ -188,7 +188,7 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
                     </div>
                   </div>
 
-                  <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
+                  <div className="rounded-[20px] border border-border/60 bg-surface p-4 md:rounded-[22px] md:p-5">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <p className="text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body">
                         Product Ideas
@@ -209,8 +209,8 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
                     </div>
                   </div>
 
-                  <div className="grid lg:grid-cols-2 gap-4">
-                    <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
+                  <div className="grid gap-4 lg:grid-cols-2">
+                    <div className="rounded-[20px] border border-border/60 bg-surface p-4 md:rounded-[22px] md:p-5">
                       <p className="text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body mb-4">
                         Core Features
                       </p>
@@ -224,7 +224,7 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
                       </div>
                     </div>
 
-                    <div className="rounded-[22px] border border-border/60 bg-surface p-4 md:p-5">
+                    <div className="rounded-[20px] border border-border/60 bg-surface p-4 md:rounded-[22px] md:p-5">
                       <p className="text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body mb-4">
                         Quality Standards
                       </p>

@@ -61,28 +61,28 @@ const Principles = ({ className = '' }: PrinciplesProps) => {
             </p>
           </AnimatedSection>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-8">
             {principles.map((principle, idx) => (
               <AnimatedSection key={principle.title} animation="fade-up" delay={idx * 120}>
-                <div className="bg-card p-8 rounded-lg shadow-card hover:shadow-interactive hover:-translate-y-1 transition-all duration-300 border-t-4 border-primary h-full">
-                  <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center mb-6">
+                <div className="h-full rounded-lg border-t-4 border-primary bg-card p-4 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-interactive sm:p-8">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary sm:mb-6 sm:h-16 sm:w-16">
                     <svg className="w-8 h-8 text-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
                       <path d={getIconPath(principle.icon)} />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold font-headline text-foreground mb-3">
+                  <h3 className="mb-2 text-base font-bold font-headline text-foreground sm:mb-3 sm:text-2xl">
                     {principle.title}
                   </h3>
-                  <p className="text-muted-foreground font-body mb-6 leading-relaxed">
+                  <p className="mb-4 text-xs leading-6 text-muted-foreground font-body sm:mb-6 sm:text-base sm:leading-relaxed">
                     {principle.description}
                   </p>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5 sm:space-y-2">
                     {principle.values.map((value) => (
                       <li key={value} className="flex items-start">
                         <svg className="w-5 h-5 text-success mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        <span className="text-foreground font-body">{value}</span>
+                        <span className="text-[11px] text-foreground font-body sm:text-base">{value}</span>
                       </li>
                     ))}
                   </ul>

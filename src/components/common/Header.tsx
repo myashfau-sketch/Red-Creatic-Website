@@ -25,6 +25,7 @@ const Header = ({ className = '' }: HeaderProps) => {
     { label: 'Products', href: '/products' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'Projects', href: '/projects' },
+    { label: 'Partnerships', href: '/partnerships' },
     { label: 'Clients', href: '/clients' },
     { label: 'Say Hello', href: '/say-hello' },
   ];
@@ -77,7 +78,8 @@ const Header = ({ className = '' }: HeaderProps) => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 bg-card shadow-md ${className}`}>
+      <header
+        className={`site-header fixed top-0 left-0 right-0 z-50 border-b border-border/80 bg-background shadow-md dark:border-white/10 lg:bg-card lg:dark:bg-card ${className}`}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16" suppressHydrationWarning>
             {/* Logo */}
@@ -137,7 +139,8 @@ const Header = ({ className = '' }: HeaderProps) => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-card border-t border-border animate-slide-up">
+          <div
+            className="site-header-menu lg:hidden border-t border-border bg-background dark:border-white/10 animate-slide-up">
             <nav className="container mx-auto px-4 py-4 flex flex-col space-y-2">
               {visibleNavigationItems.map((item) => (
                 <Link

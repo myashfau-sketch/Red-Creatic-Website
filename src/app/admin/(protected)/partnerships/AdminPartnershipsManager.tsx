@@ -2,14 +2,14 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { ProjectRecord } from '../../../../types/database';
+import type { PartnershipRecord } from '../../../../types/database';
 import { createSupabaseBrowserClient } from '../../../../lib/supabase/client';
 
 const PROJECT_HTML_BUCKET = 'project-pages';
 const PROJECT_IMAGE_BUCKET = 'gallery-images';
 
-interface AdminProjectsManagerProps {
-  items: ProjectRecord[];
+interface AdminPartnershipsManagerProps {
+  items: PartnershipRecord[];
   serviceOptions: string[];
   productOptions: string[];
   upsertAction: (formData: FormData) => Promise<void>;
@@ -90,7 +90,7 @@ function TagSelector({
   );
 }
 
-function ProjectEditor({
+function PartnershipEditor({
   item,
   serviceOptions,
   productOptions,
@@ -99,7 +99,7 @@ function ProjectEditor({
   onDirtyChange,
   onSaved,
 }: {
-  item?: ProjectRecord;
+  item?: PartnershipRecord;
   serviceOptions: string[];
   productOptions: string[];
   upsertAction: (formData: FormData) => Promise<void>;
@@ -168,7 +168,7 @@ function ProjectEditor({
     setError(null);
 
     const safeName = selectedHtmlFile.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
-    const filePath = `projects/${Date.now()}-${safeName || 'detail.html'}`;
+    const filePath = `partnerships/${Date.now()}-${safeName || 'detail.html'}`;
 
     const { error: uploadError } = await supabase.storage
       .from(PROJECT_HTML_BUCKET)
@@ -198,7 +198,7 @@ function ProjectEditor({
     setError(null);
 
     const safeName = selectedImageFile.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
-    const filePath = `projects/${Date.now()}-${safeName || 'project-image.jpg'}`;
+    const filePath = `partnerships/${Date.now()}-${safeName || 'partnership-image.jpg'}`;
 
     const { error: uploadError } = await supabase.storage
       .from(PROJECT_IMAGE_BUCKET)
@@ -237,7 +237,7 @@ function ProjectEditor({
       if (selectedImageFile) {
         const uploadedImageUrl = await uploadSelectedImage();
         if (!uploadedImageUrl) {
-          throw new Error('Project image upload failed before the project could be saved.');
+          throw new Error('Partnership image upload failed before the partnership could be saved.');
         }
         if (!finalGalleryImages.includes(uploadedImageUrl)) {
           finalGalleryImages = [...finalGalleryImages, uploadedImageUrl];
@@ -248,7 +248,7 @@ function ProjectEditor({
       if (selectedHtmlFile) {
         const uploadedUrl = await uploadSelectedHtml();
         if (!uploadedUrl) {
-          throw new Error('HTML detail page upload failed before the project could be saved.');
+          throw new Error('HTML detail page upload failed before the partnership could be saved.');
         }
         finalHtmlUrl = uploadedUrl;
       }
@@ -273,7 +273,7 @@ function ProjectEditor({
         setSelectedHtmlFile(null);
       }
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Failed to save project.');
+      setError(submitError instanceof Error ? submitError.message : 'Failed to save partnership.');
     } finally {
       setIsSaving(false);
     }
@@ -291,7 +291,7 @@ function ProjectEditor({
       onDirtyChange(false);
       onSaved();
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Failed to delete project.');
+      setError(submitError instanceof Error ? submitError.message : 'Failed to delete partnership.');
     } finally {
       setIsDeleting(false);
     }
@@ -301,10 +301,10 @@ function ProjectEditor({
     <div className="min-h-[calc(100vh-11rem)] rounded-[1.35rem] border border-border bg-card p-5 shadow-sm lg:p-6">
       <div className="mb-5 border-b border-border/70 pb-5">
         <p className="mb-2 text-xs uppercase tracking-[0.2em] text-primary/75">
-          {isNew ? 'New Project' : 'Project Details'}
+          {isNew ? 'New Partnership' : 'Partnership Details'}
         </p>
         <h2 className="text-[1.7rem] font-semibold text-foreground">
-          {item?.title || 'Create a new project'}
+          {item?.title || 'Create a new partnership'}
         </h2>
       </div>
 
@@ -356,9 +356,9 @@ function ProjectEditor({
                 onClick={() => setIsHtmlUrlEditorOpen(true)}
                 className="rounded-xl border border-border bg-background px-4 py-3 text-left text-sm transition-colors hover:border-primary hover:text-primary"
               >
-                <span className="block text-xs uppercase tracking-[0.18em] text-primary/70">Project HTML Page URL</span>
+                <span className="block text-xs uppercase tracking-[0.18em] text-primary/70">Partnership HTML Page URL</span>
                 <span className="mt-1 block text-sm text-foreground/75">
-                  {htmlUrl ? 'View or edit linked HTML page' : 'Add project HTML page URL'}
+                  {htmlUrl ? 'View or edit linked HTML page' : 'Add partnership HTML page URL'}
                 </span>
               </button>
               <button
@@ -399,7 +399,7 @@ function ProjectEditor({
                       <div className="min-w-0 flex-1 space-y-2">
                         <div className="relative h-24 overflow-hidden rounded-lg bg-surface">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={option} alt="Project image option" className="h-full w-full object-cover" />
+                          <img src={option} alt="Partnership image option" className="h-full w-full object-cover" />
                         </div>
                       </div>
                     </label>
@@ -437,7 +437,7 @@ function ProjectEditor({
               <div className="rounded-[1.1rem] border border-border bg-background/70 p-4">
                 <div className="flex flex-col gap-3">
                   <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-foreground">Upload Project Image</span>
+                    <span className="mb-2 block text-sm font-medium text-foreground">Upload Partnership Image</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -465,7 +465,7 @@ function ProjectEditor({
               <div className="rounded-[1.1rem] border border-border bg-background/70 p-4">
                 <div className="flex flex-col gap-3">
                   <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-foreground">Upload Project HTML</span>
+                    <span className="mb-2 block text-sm font-medium text-foreground">Upload Partnership HTML</span>
                     <input
                       type="file"
                       accept=".html,.htm,text/html"
@@ -498,7 +498,7 @@ function ProjectEditor({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={imageUrl}
-                      alt={item?.title ?? 'Project preview'}
+                      alt={item?.title ?? 'Partnership preview'}
                       className="h-[200px] w-full rounded-xl bg-surface object-cover"
                     />
                   ) : null}
@@ -521,7 +521,7 @@ function ProjectEditor({
                 </div>
               ) : (
                 <div className="flex h-[220px] items-center justify-center bg-surface text-sm text-muted-foreground">
-                  Upload or paste a project image and HTML page to preview them here
+                  Upload or paste a partnership image and HTML page to preview them here
                 </div>
               )}
             </div>
@@ -555,7 +555,7 @@ function ProjectEditor({
               disabled={isSaving || isDeleting || isUploadingHtml || isUploadingImage}
               className="rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground"
             >
-              {isSaving ? 'Saving...' : isNew ? 'Create Project' : 'Save Changes'}
+              {isSaving ? 'Saving...' : isNew ? 'Create Partnership' : 'Save Changes'}
             </button>
           </div>
         </div>
@@ -566,7 +566,7 @@ function ProjectEditor({
           <div className="w-full max-w-2xl rounded-[1.35rem] border border-border bg-card p-6 shadow-xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-primary/75">Project Utility</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-primary/75">Partnership Utility</p>
                 <h3 className="mt-2 text-xl font-semibold text-foreground">Main Image URL</h3>
               </div>
               <button
@@ -608,8 +608,8 @@ function ProjectEditor({
           <div className="w-full max-w-2xl rounded-[1.35rem] border border-border bg-card p-6 shadow-xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-primary/75">Project Utility</p>
-                <h3 className="mt-2 text-xl font-semibold text-foreground">Project HTML Page URL</h3>
+                <p className="text-xs uppercase tracking-[0.2em] text-primary/75">Partnership Utility</p>
+                <h3 className="mt-2 text-xl font-semibold text-foreground">Partnership HTML Page URL</h3>
               </div>
               <button
                 type="button"
@@ -629,7 +629,7 @@ function ProjectEditor({
                   onDirtyChange(true);
                 }}
                 className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-primary"
-                placeholder="Paste or edit the project HTML page URL"
+                placeholder="Paste or edit the partnership HTML page URL"
               />
               <div className="flex justify-end">
                 <button
@@ -650,7 +650,7 @@ function ProjectEditor({
           <div className="w-full max-w-3xl rounded-[1.35rem] border border-border bg-card p-6 shadow-xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-primary/75">Project Utility</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-primary/75">Partnership Utility</p>
                 <h3 className="mt-2 text-xl font-semibold text-foreground">Gallery Image URLs</h3>
               </div>
               <button
@@ -761,13 +761,13 @@ function ProjectEditor({
   );
 }
 
-export default function AdminProjectsManager({
+export default function AdminPartnershipsManager({
   items,
   serviceOptions,
   productOptions,
   upsertAction,
   deleteAction,
-}: AdminProjectsManagerProps) {
+}: AdminPartnershipsManagerProps) {
   const [activeId, setActiveId] = useState<string>('new');
   const [isDirty, setIsDirty] = useState(false);
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -794,8 +794,8 @@ export default function AdminProjectsManager({
       <div className="grid min-h-[calc(100vh-9rem)] gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="rounded-[1.35rem] border border-border bg-card shadow-sm lg:sticky lg:top-24 lg:h-[calc(100vh-8rem)] lg:overflow-hidden">
           <div className="border-b border-border/70 p-5">
-            <p className="mb-2 text-xs uppercase tracking-[0.2em] text-primary/75">Projects Navigation</p>
-            <h2 className="text-xl font-semibold text-foreground">Projects</h2>
+            <p className="mb-2 text-xs uppercase tracking-[0.2em] text-primary/75">Partnerships Navigation</p>
+            <h2 className="text-xl font-semibold text-foreground">Partnerships</h2>
             <button
               type="button"
               onClick={() => selectItem('new')}
@@ -805,7 +805,7 @@ export default function AdminProjectsManager({
                   : 'border-border bg-background text-foreground hover:border-primary hover:text-primary'
               }`}
             >
-              + New Project
+              + New Partnership
             </button>
           </div>
           <div className="max-h-[420px] overflow-y-auto p-3 lg:max-h-[calc(100vh-18rem)]">
@@ -823,7 +823,7 @@ export default function AdminProjectsManager({
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-foreground">
-                      {item.title || 'Untitled project'}
+                      {item.title || 'Untitled partnership'}
                     </p>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
                       <span className={`inline-flex h-2.5 w-2.5 rounded-full ${item.is_published ? 'bg-emerald-500' : 'bg-amber-500'}`} />
@@ -848,7 +848,7 @@ export default function AdminProjectsManager({
         </aside>
 
         <div className="lg:sticky lg:top-24">
-          <ProjectEditor
+          <PartnershipEditor
             key={activeItem?.id ?? 'new'}
             item={activeItem}
             serviceOptions={serviceOptions}
@@ -867,7 +867,7 @@ export default function AdminProjectsManager({
             <p className="mb-2 text-xs uppercase tracking-[0.2em] text-primary/75">Unsaved Changes</p>
             <h3 className="text-xl font-semibold text-foreground">Leave without saving?</h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              You have unsaved changes in this project. If you continue, those edits will be lost.
+              You have unsaved changes in this partnership. If you continue, those edits will be lost.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button

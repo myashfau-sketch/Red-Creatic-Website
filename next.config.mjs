@@ -43,6 +43,18 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'thesomerset.com.mv',
       },
+      {
+        protocol: 'https',
+        hostname: 'scontent.fmle2-2.fna.fbcdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.vexels.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.vecteezy.com',
+      },
     ],
   },
 

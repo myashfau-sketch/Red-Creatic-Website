@@ -32,10 +32,13 @@ export default function ClientsPageClient({
   const [visibleClients, setVisibleClients] = useState(15);
   const [shuffledTestimonials, setShuffledTestimonials] = useState(initialTestimonials);
   const [testimonialPage, setTestimonialPage] = useState(0);
+  const [mobileVisibleTestimonials, setMobileVisibleTestimonials] = useState(2);
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
 
   useEffect(() => {
     setShuffledTestimonials(shuffleArray(initialTestimonials));
     setTestimonialPage(0);
+    setMobileVisibleTestimonials(2);
   }, [initialTestimonials]);
 
   const testimonialPageCount = Math.max(1, Math.ceil(shuffledTestimonials.length / TESTIMONIALS_PER_PAGE));
@@ -53,6 +56,13 @@ export default function ClientsPageClient({
     setShuffledClients(shuffleArray(filteredClients));
     setVisibleClients(15);
   }, [activeCategory, initialClients]);
+
+  useEffect(() => {
+    const updateViewportWidth = () => setViewportWidth(window.innerWidth);
+    updateViewportWidth();
+    window.addEventListener('resize', updateViewportWidth);
+    return () => window.removeEventListener('resize', updateViewportWidth);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -164,22 +174,31 @@ export default function ClientsPageClient({
             </div>
           </AnimatedSection>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
             {shuffledClients.slice(0, visibleClients).map((client, idx) => (
               <AnimatedSection key={client.id} animation="fade-up" delay={idx * 30}>
+                {(() => {
+                  const mobileOffsetScale = viewportWidth !== null && viewportWidth < 640 ? 0.45 : 1;
+                  const mobileYOffsetNudge = viewportWidth !== null && viewportWidth < 640 ? 8 : 0;
+                  const mobileLogoScale = viewportWidth !== null && viewportWidth < 640 ? 0.9 : 1;
+                  const logoOffsetX = (client.logoOffsetX ?? 0) * mobileOffsetScale;
+                  const logoOffsetY = (client.logoOffsetY ?? 0) * mobileOffsetScale + mobileYOffsetNudge;
+
+                  return (
                 <div
-                  className="group relative min-h-[170px] rounded-2xl border border-red-500/45 bg-white text-center shadow-[0_0_0_1px_rgba(239,68,68,0.22),0_0_18px_rgba(239,68,68,0.10)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_0_1px_rgba(239,68,68,0.32),0_0_24px_rgba(239,68,68,0.16),0_16px_36px_rgba(0,0,0,0.12)]"
+                  className="group relative aspect-[1.45/1] rounded-2xl border border-red-500/45 bg-white text-center shadow-[0_0_0_1px_rgba(239,68,68,0.22),0_0_18px_rgba(239,68,68,0.10)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_0_1px_rgba(239,68,68,0.32),0_0_24px_rgba(239,68,68,0.16),0_16px_36px_rgba(0,0,0,0.12)]"
                 >
                   <div className="absolute inset-[10px] flex items-center justify-center rounded-[0.85rem] bg-white">
                     {client.logo ? (
-                      <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[0.85rem] bg-white p-2">
+                      <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[0.85rem] bg-white p-1 sm:p-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={client.logo}
                           alt={client.logoAlt}
-                          className="h-full w-full object-contain p-0 transition-all duration-300 group-hover:scale-[1.02] group-hover:blur-[2px] group-hover:opacity-25"
+                          className="block max-h-[96%] max-w-[96%] object-contain p-0 transition-all duration-300 group-hover:blur-[2px] group-hover:opacity-25 sm:max-h-[88%] sm:max-w-[88%]"
                           style={{
-                            transform: `translate(${client.logoOffsetX ?? 0}px, ${client.logoOffsetY ?? 0}px) scale(${client.logoScale ?? 1})`,
+                            transform: `translate(${logoOffsetX}px, ${logoOffsetY}px) scale(${(client.logoScale ?? 1) * mobileLogoScale})`,
+                            transformOrigin: 'center center',
                           }}
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-white/88 px-4 text-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
@@ -203,6 +222,8 @@ export default function ClientsPageClient({
                     </div>
                   )}
                 </div>
+                  );
+                })()}
               </AnimatedSection>
             ))}
           </div>
@@ -235,7 +256,41 @@ export default function ClientsPageClient({
             </AnimatedSection>
 
             <div className="relative">
-              <div className="-mx-3 -my-4 overflow-hidden px-3 py-4">
+              <div className="md:hidden space-y-4">
+                {shuffledTestimonials.slice(0, mobileVisibleTestimonials).map((testimonial, idx) => (
+                  <AnimatedSection key={`mobile-${testimonial.id}`} animation="fade-up" delay={idx * 60}>
+                    <div className="bg-card rounded-2xl p-5 shadow-card transition-all duration-300">
+                      <div className="mb-4 flex justify-center gap-1">
+                        {[...Array(testimonial.rating)].map((_, starIndex) => (
+                          <Icon key={`${testimonial.id}-${starIndex}`} name="StarIcon" size={16} className="text-accent" variant="solid" />
+                        ))}
+                      </div>
+                      <blockquote className="mb-5 text-center text-sm font-body italic leading-relaxed text-foreground/70">
+                        &quot;{testimonial.testimonial}&quot;
+                      </blockquote>
+                      <div className="border-t border-border pt-4 text-center">
+                        <div className="text-sm font-bold font-headline text-foreground">{testimonial.name}</div>
+                        <div className="text-xs text-foreground/50 font-body">{testimonial.position}</div>
+                        <div className="text-xs font-semibold text-primary font-headline">{testimonial.company}</div>
+                      </div>
+                    </div>
+                  </AnimatedSection>
+                ))}
+
+                {mobileVisibleTestimonials < shuffledTestimonials.length && (
+                  <div className="flex justify-center pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setMobileVisibleTestimonials((prev) => prev + 2)}
+                      className="rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary"
+                    >
+                      Load More
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="hidden md:block -mx-3 -my-4 overflow-hidden px-3 py-4">
                 <div
                   className="flex transition-transform duration-700 ease-out"
                   style={{ transform: `translateX(-${testimonialPage * 100}%)` }}
@@ -276,7 +331,7 @@ export default function ClientsPageClient({
               </div>
 
               {testimonialPageCount > 1 && (
-                <div className="mt-8 flex items-center justify-center gap-4">
+                <div className="mt-8 hidden items-center justify-center gap-4 md:flex">
                   <button
                     type="button"
                     onClick={() => setTestimonialPage((prev) => Math.max(0, prev - 1))}

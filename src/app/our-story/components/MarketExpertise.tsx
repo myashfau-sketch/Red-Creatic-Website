@@ -69,20 +69,20 @@ const MarketExpertise = ({ className = '' }: MarketExpertiseProps) => {
     <section className={`py-16 bg-background ${className}`}>
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <AnimatedSection animation="fade-up" className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-4">
+          <AnimatedSection animation="fade-up" className="text-center mb-10 md:mb-12">
+            <h2 className="mb-3 text-2xl md:text-4xl font-bold font-headline text-foreground">
               Maldivian Market Expertise
             </h2>
-            <p className="text-lg text-muted-foreground font-body max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-sm text-muted-foreground font-body md:text-lg">
               Specialized understanding of the unique Maldivian business landscape and local market dynamics
             </p>
           </AnimatedSection>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
             {expertiseAreas.map((area, idx) => (
               <AnimatedSection key={area.title} animation="fade-up" delay={idx * 80}>
-                <div className="bg-card p-6 rounded-lg shadow-card hover:shadow-interactive hover:-translate-y-1 transition-all duration-300 border-l-4 border-accent h-full">
-                  <div className="flex items-start space-x-4">
+                <div className="bg-card p-4 sm:p-6 rounded-lg shadow-card hover:shadow-interactive hover:-translate-y-1 transition-all duration-300 border-l-4 border-accent h-full">
+                  <div className="flex flex-col items-center text-center gap-3 sm:flex-row sm:items-start sm:text-left sm:space-x-4 sm:gap-0">
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center">
                         <svg className="w-6 h-6 text-accent-foreground" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -91,10 +91,10 @@ const MarketExpertise = ({ className = '' }: MarketExpertiseProps) => {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold font-headline text-foreground mb-2">
+                      <h3 className="mb-1 text-base font-bold font-headline text-foreground sm:mb-2 sm:text-lg">
                         {area.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground font-body leading-relaxed">
+                      <p className="text-xs text-muted-foreground font-body leading-6 sm:text-sm sm:leading-relaxed">
                         {area.description}
                       </p>
                     </div>
@@ -104,8 +104,8 @@ const MarketExpertise = ({ className = '' }: MarketExpertiseProps) => {
             ))}
           </div>
 
-          <AnimatedSection animation="zoom-in" delay={200} className="mt-12 bg-primary/5 border-2 border-primary rounded-lg p-8">
-            <div className="flex items-start space-x-4">
+          <AnimatedSection animation="zoom-in" delay={200} className="mt-12 rounded-lg border-2 border-primary bg-primary/5 p-5 sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:space-x-4">
               <div className="flex-shrink-0">
                 <svg className="w-12 h-12 text-primary" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -115,17 +115,17 @@ const MarketExpertise = ({ className = '' }: MarketExpertiseProps) => {
                 <h3 className="text-2xl font-bold font-headline text-foreground mb-3">
                   Established & Trusted
                 </h3>
-                <p className="text-muted-foreground font-body leading-relaxed mb-4">
+                <p className="mb-4 text-muted-foreground font-body leading-relaxed">
                   Red Creatic is a fully licensed Maldivian business built on dependable service, careful workmanship, and strong local understanding. We focus on clear communication, consistent quality, and practical solutions that fit the needs of businesses across the Maldives.
                 </p>
-                <div className="flex flex-wrap gap-3">
-                  <span className="px-4 py-2 bg-primary/10 text-primary font-semibold font-body text-sm rounded-full">
+                <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+                  <span className="rounded-full bg-primary/10 px-3 py-2 text-center text-[11px] font-semibold font-body text-primary sm:px-4 sm:text-sm">
                     Licensed Business
                   </span>
-                  <span className="px-4 py-2 bg-accent/10 text-accent font-semibold font-body text-sm rounded-full">
+                  <span className="rounded-full bg-accent/10 px-3 py-2 text-center text-[11px] font-semibold font-body text-accent sm:px-4 sm:text-sm">
                     Locally Experienced
                   </span>
-                  <span className="px-4 py-2 bg-success/10 text-success font-semibold font-body text-sm rounded-full">
+                  <span className="rounded-full bg-success/10 px-3 py-2 text-center text-[11px] font-semibold font-body text-success sm:px-4 sm:text-sm max-w-[72px] leading-4 sm:max-w-none sm:leading-normal">
                     Quality Focused
                   </span>
                 </div>

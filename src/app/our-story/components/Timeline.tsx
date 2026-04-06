@@ -172,21 +172,21 @@ const Timeline = ({ className = '', items = fallbackTimelineData }: TimelineProp
     <section className={`py-16 bg-surface ${className}`}>
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto w-full">
-          <AnimatedSection animation="fade-up" className="text-center mb-10">
+          <AnimatedSection animation="fade-up" className="text-center mb-8 sm:mb-10">
             <p className="text-sm uppercase tracking-[0.18em] text-primary/80 font-body mb-3">
               Our Journey
             </p>
-            <h2 className="text-2xl md:text-3xl font-semibold font-body text-foreground mb-3">
+            <h2 className="mb-2 text-xl font-semibold font-body text-foreground md:text-3xl">
               A simple look at how Red Creatic has grown
             </h2>
-            <p className="text-sm md:text-base text-muted-foreground font-body max-w-2xl mx-auto leading-7">
+            <p className="mx-auto max-w-2xl text-xs text-muted-foreground font-body leading-6 md:text-base md:leading-7">
               Browse the years on the left to follow the milestones that shaped our production, services, and direction.
             </p>
           </AnimatedSection>
 
           <AnimatedSection animation="fade-up" delay={100}>
             <div className="grid lg:grid-cols-[220px_minmax(0,1fr)] gap-6 lg:gap-10">
-              <div className="relative">
+              <div className="relative min-w-0">
                 <div className="absolute left-[1.45rem] top-0 bottom-0 hidden w-px bg-border/80 dark:bg-red-500/25 sm:block" />
                 <button
                   type="button"
@@ -201,7 +201,7 @@ const Timeline = ({ className = '', items = fallbackTimelineData }: TimelineProp
                 </button>
                 <div
                   ref={railRef}
-                  className="timeline-year-rail -mx-2 flex gap-3 overflow-x-auto px-2 pb-3 pt-2 sm:mx-0 sm:block sm:max-h-[560px] sm:space-y-3 sm:overflow-y-auto sm:px-2 sm:pb-3 sm:pt-2"
+                  className="timeline-year-rail flex max-w-full gap-2 overflow-x-auto pb-3 pt-2 sm:mx-0 sm:block sm:max-h-[560px] sm:space-y-3 sm:overflow-y-auto sm:px-2 sm:pb-3 sm:pt-2"
                 >
                   {timelineData.map((item, index) => {
                     const isActive = item.year === activeYear;
@@ -212,13 +212,13 @@ const Timeline = ({ className = '', items = fallbackTimelineData }: TimelineProp
                         data-year={item.year}
                         type="button"
                         onClick={() => setActiveYear(item.year)}
-                        className={`relative min-w-[108px] sm:w-full text-left rounded-2xl border px-4 py-3.5 transition-all duration-200 ${
+                        className={`relative w-[96px] shrink-0 text-left rounded-2xl border px-3 py-3 transition-all duration-200 sm:min-w-0 sm:w-full sm:px-4 sm:py-3.5 ${
                           isActive
                             ? 'border-red-500 bg-card text-foreground ring-2 ring-red-500/35 shadow-[0_0_0_1px_rgba(239,68,68,0.95),0_0_18px_rgba(239,68,68,0.24),0_0_34px_rgba(239,68,68,0.14)] dark:border-[3px] dark:border-red-500 dark:ring-red-500/35 dark:shadow-[0_0_0_1px_rgba(239,68,68,0.95),0_0_18px_rgba(239,68,68,0.24),0_0_34px_rgba(239,68,68,0.14)]'
                             : 'border-border/70 bg-card text-foreground hover:border-primary/35 hover:bg-card/80 dark:hover:border-red-500/45'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <span
                             className={`relative z-10 flex h-4 w-4 shrink-0 rounded-full border ${
                               isActive
@@ -227,7 +227,7 @@ const Timeline = ({ className = '', items = fallbackTimelineData }: TimelineProp
                             }`}
                           />
                           <div className="min-w-0">
-                            <div className="text-base font-semibold font-body">
+                            <div className="text-sm font-semibold font-body sm:text-base">
                               {item.year}
                             </div>
                             <div
@@ -256,14 +256,14 @@ const Timeline = ({ className = '', items = fallbackTimelineData }: TimelineProp
                 </button>
               </div>
 
-              <div className="rounded-[28px] border border-border/70 bg-card p-5 md:p-7 lg:p-8 shadow-card">
-                <div key={activeItem.year} className="timeline-content-animate flex flex-col gap-5">
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                    <div>
+              <div className="min-w-0 overflow-hidden rounded-[28px] border border-border/70 bg-card p-4 md:p-7 lg:p-8 shadow-card">
+                <div key={activeItem.year} className="timeline-content-animate flex min-w-0 flex-col gap-4 md:gap-5">
+                  <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div className="min-w-0">
                       <p className="text-xs uppercase tracking-[0.18em] text-primary/80 font-body mb-2">
                         {activeItem.year}
                       </p>
-                      <h3 className="text-xl md:text-2xl font-semibold font-body text-foreground leading-tight">
+                      <h3 className="text-lg md:text-2xl font-semibold font-body text-foreground leading-tight">
                         {activeItem.title}
                       </h3>
                     </div>
@@ -273,17 +273,17 @@ const Timeline = ({ className = '', items = fallbackTimelineData }: TimelineProp
                       </div>
                   </div>
 
-                  <div className="rounded-[24px] border border-border/60 bg-background p-5 md:p-6 dark:border-red-500/20 dark:bg-red-500/[0.04]">
-                    <p className="text-sm md:text-base text-foreground/80 font-body leading-7">
+                  <div className="rounded-[24px] border border-border/60 bg-background p-4 md:p-6 dark:border-red-500/20 dark:bg-red-500/[0.04]">
+                    <p className="text-xs md:text-base text-foreground/80 font-body leading-6 md:leading-7">
                       {activeItem.description}
                     </p>
                   </div>
 
-                  <div className="rounded-[24px] border border-red-500/15 bg-red-500/[0.05] p-5 md:p-6 dark:border-red-500/30 dark:bg-red-500/[0.08]">
-                    <p className="text-xs uppercase tracking-[0.18em] text-primary/80 font-body mb-3">
+                  <div className="rounded-[24px] border border-red-500/15 bg-red-500/[0.05] p-4 md:p-6 dark:border-red-500/30 dark:bg-red-500/[0.08]">
+                    <p className="mb-2 text-[11px] uppercase tracking-[0.18em] text-primary/80 font-body md:mb-3">
                       Milestones
                     </p>
-                    <ul className="space-y-2.5">
+                    <ul className="space-y-2">
                       {milestonePoints.map((point, index) => (
                         <li
                           key={point}
@@ -291,7 +291,7 @@ const Timeline = ({ className = '', items = fallbackTimelineData }: TimelineProp
                           style={{ animationDelay: `${120 + index * 55}ms` }}
                         >
                           <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                          <span className="text-sm md:text-base text-foreground font-body leading-7">
+                          <span className="text-xs md:text-base text-foreground font-body leading-6 md:leading-7">
                             {point}
                           </span>
                         </li>

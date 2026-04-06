@@ -77,6 +77,7 @@ const Footer = () => {
     { label: 'Products', href: '/products' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'Projects', href: '/projects' },
+    { label: 'Partnerships', href: '/partnerships' },
     { label: 'Say Hello', href: '/say-hello' }
   ];
 
@@ -107,13 +108,13 @@ const Footer = () => {
   const isWhatWeOfferEnabled = !disabledPages.includes('what-we-offer');
 
   return (
-    <footer className="bg-secondary text-secondary-foreground">
+    <footer className="border-t border-black/5 bg-secondary text-secondary-foreground shadow-[0_-18px_48px_rgba(0,0,0,0.04)] dark:border-red-500/30 dark:bg-[linear-gradient(180deg,#1b0608_0%,#23080b_55%,#120304_100%)] dark:shadow-[0_-24px_64px_rgba(0,0,0,0.45)]">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 py-12 lg:py-16">
+      <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
+          <div className="space-y-4 text-center md:text-left">
+            <div className="flex items-center justify-center space-x-2 md:justify-start">
               <Image
                 src="/assets/images/RED_CREATIC_Landscape-1769080873477.png"
                 alt="Red Creatic Logo"
@@ -123,11 +124,11 @@ const Footer = () => {
                 priority
               />
             </div>
-            <p className="text-sm opacity-80 font-body leading-relaxed">
-              Maldives' premier printing and signage specialists. Transforming brand visions into stunning visual reality with local expertise and global quality.
+            <p className="mx-auto max-w-sm text-sm opacity-80 font-body leading-relaxed md:mx-0">
+              Crafted in Maldives for brands that need clear, dependable, and locally produced visual solutions.
             </p>
             {/* Social Links */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex justify-center gap-3 pt-2 md:justify-start">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
@@ -144,7 +145,7 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="hidden md:block">
             <h3 className="text-lg font-bold font-headline mb-4">Quick Links</h3>
             <ul className="space-y-2">
               {visibleQuickLinks.map((link) => (
@@ -163,7 +164,7 @@ const Footer = () => {
 
           {/* Services */}
           {isWhatWeOfferEnabled && (
-          <div>
+          <div className="hidden md:block">
             <h3 className="text-lg font-bold font-headline mb-4">Our Services</h3>
             <ul className="space-y-2">
               {services.map((service) => (
@@ -182,14 +183,14 @@ const Footer = () => {
           )}
 
           {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-bold font-headline mb-4">Get In Touch</h3>
+          <div className="md:col-span-2 lg:col-span-1">
+            <h3 className="mb-4 text-center text-lg font-bold font-headline md:text-left">Get In Touch</h3>
             <ul className="space-y-3">
               {contactInfo.map((info) => (
                 <li key={info.text}>
                   <a
                     href={info.href}
-                    className="text-sm opacity-80 hover:opacity-100 hover:text-primary font-body transition-all duration-300 inline-flex items-start gap-3 group"
+                    className="text-sm opacity-80 hover:opacity-100 hover:text-primary font-body transition-all duration-300 inline-flex items-start gap-3 group justify-center md:justify-start text-center md:text-left w-full md:w-auto"
                   >
                     <Icon name={info.icon as any} size={18} className="mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
                     <span>{info.text}</span>
@@ -199,7 +200,7 @@ const Footer = () => {
             </ul>
 
             {/* Business Hours */}
-            <div className="mt-6 p-4 bg-white/5 rounded-lg">
+            <div className="mt-6 hidden rounded-lg bg-white/5 p-4 md:block">
               <div className="text-sm font-semibold font-headline mb-2">Business Hours</div>
               <div className="text-xs opacity-80 font-body space-y-1">
                 <div>Sunday - Thursday: 09:00 AM - 5:00 PM</div>
@@ -212,7 +213,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-white/10">
+      <div className="border-t border-black/10 dark:border-red-400/20">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-80 font-body">
             <div>

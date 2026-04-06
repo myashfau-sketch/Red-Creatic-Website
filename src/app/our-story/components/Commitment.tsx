@@ -41,30 +41,30 @@ const Commitment = ({ className = '' }: CommitmentProps) => {
     <section className={`py-16 bg-primary text-primary-foreground ${className}`}>
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-4">
+          <h2 className="mb-3 text-2xl md:text-4xl font-bold font-headline text-center">
             Our Commitment to Excellence
           </h2>
-          <p className="text-lg text-primary-foreground/80 font-body text-center mb-12 max-w-2xl mx-auto">
+          <p className="mx-auto mb-10 max-w-2xl text-sm text-primary-foreground/80 font-body text-center md:mb-12 md:text-lg">
             Delivering exceptional results through unwavering dedication to quality, reliability, and client success
           </p>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-2 gap-3 md:gap-8">
             {commitments.map((commitment) => (
-              <div key={commitment.title} className="bg-primary-foreground/10 backdrop-blur-sm p-8 rounded-lg border border-primary-foreground/20 hover:bg-primary-foreground/15 transition-all duration-300">
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-2xl font-bold font-headline">
+              <div key={commitment.title} className="rounded-lg border border-primary-foreground/20 bg-primary-foreground/10 p-4 backdrop-blur-sm transition-all duration-300 hover:bg-primary-foreground/15 sm:p-8">
+                <div className="mb-3 flex flex-col gap-3 sm:mb-4 sm:flex-row sm:items-start sm:justify-between">
+                  <h3 className="text-lg font-bold font-headline sm:text-2xl">
                     {commitment.title}
                   </h3>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold font-headline text-accent">
+                  <div className="text-left sm:text-right">
+                    <div className="text-2xl font-bold font-headline text-accent sm:text-3xl">
                       {commitment.stat}
                     </div>
-                    <div className="text-sm font-body text-primary-foreground/80">
+                    <div className="text-xs font-body text-primary-foreground/80 sm:text-sm">
                       {commitment.statLabel}
                     </div>
                   </div>
                 </div>
-                <p className="text-primary-foreground/90 font-body leading-relaxed">
+                <p className="text-sm text-primary-foreground/90 font-body leading-relaxed sm:text-base">
                   {commitment.description}
                 </p>
               </div>

@@ -29,7 +29,7 @@ const ServiceCard = ({ service, onOpenModal }: ServiceCardProps) => {
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onOpenModal(service)}
     >
-      <div className="p-6 flex flex-col items-center text-center flex-grow">
+      <div className="flex flex-grow flex-col items-center p-4 text-center sm:p-6">
         {/* Centered Icon */}
         <div className={`w-16 h-16 rounded-lg bg-surface flex items-center justify-center transition-all duration-300 mb-4 ${isHovered ? 'bg-primary' : ''}`}>
           <Icon 
@@ -40,17 +40,17 @@ const ServiceCard = ({ service, onOpenModal }: ServiceCardProps) => {
         </div>
 
         {/* Category Badge */}
-        <span className="text-xs font-medium font-body text-muted-foreground bg-surface px-3 py-1 rounded-full mb-4">
+        <span className="mb-3 rounded-full bg-surface px-3 py-1 text-[11px] font-medium font-body text-muted-foreground sm:mb-4 sm:text-xs">
           {service.category}
         </span>
 
         {/* Centered Title */}
-        <h3 className="text-xl font-bold font-headline text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
+        <h3 className="mb-2 text-[15px] font-bold font-headline text-foreground transition-colors duration-300 group-hover:text-primary sm:mb-3 sm:text-xl">
           {service.title}
         </h3>
 
         {/* Centered Description */}
-        <p className="text-sm font-body text-muted-foreground mb-4 line-clamp-3 flex-grow">
+        <p className="mb-3 line-clamp-3 flex-grow text-xs leading-6 font-body text-muted-foreground sm:mb-4 sm:text-sm">
           {service.description}
         </p>
 

@@ -8,10 +8,10 @@ interface CompanyIntroProps {
 
 const CompanyIntro = ({ className = '' }: CompanyIntroProps) => {
   return (
-    <section className={`py-16 bg-background ${className}`}>
+    <section className={`bg-background py-8 md:py-16 ${className}`}>
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="grid md:grid-cols-3 gap-8 mt-4">
+          <div className="grid grid-cols-3 gap-3 md:mt-4 md:gap-8">
             {[
               {
                 color: 'bg-primary',
@@ -45,12 +45,12 @@ const CompanyIntro = ({ className = '' }: CompanyIntroProps) => {
               },
             ].map((item, idx) => (
               <AnimatedSection key={item.title} animation="fade-up" delay={idx * 120}>
-                <div className="p-6 bg-surface rounded-lg shadow-card hover:shadow-interactive hover:-translate-y-1 transition-all duration-300">
-                  <div className={`w-16 h-16 ${item.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                <div className="rounded-lg bg-surface p-3 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-interactive sm:p-6">
+                  <div className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full ${item.color} sm:mb-4 sm:h-16 sm:w-16`}>
                     {item.icon}
                   </div>
-                  <h3 className="text-xl font-semibold font-headline text-foreground mb-2">{item.title}</h3>
-                  <p className="text-muted-foreground font-body">{item.desc}</p>
+                  <h3 className="mb-1 text-[13px] font-semibold font-headline text-foreground sm:mb-2 sm:text-xl">{item.title}</h3>
+                  <p className="text-[10px] leading-5 text-muted-foreground font-body sm:text-base">{item.desc}</p>
                 </div>
               </AnimatedSection>
             ))}
