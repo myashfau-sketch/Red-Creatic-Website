@@ -10,12 +10,20 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Next.js with Tailwind CSS',
-  description: 'A boilerplate project with Next.js and Tailwind CSS',
+  title: {
+    default: 'Red Creatic',
+    template: 'Red Creatic | %s',
+  },
+  description: 'Red Creatic Maldives printing, signage, branding, gallery, products, and project showcase.',
   icons: {
     icon: [
-      { url: '/favicon.ico', type: 'image/x-icon' }
+      {
+        url: '/assets/images/logo-only.png',
+        type: 'image/png',
+      },
     ],
+    shortcut: ['/assets/images/logo-only.png'],
+    apple: ['/assets/images/logo-only.png'],
   },
 };
 
