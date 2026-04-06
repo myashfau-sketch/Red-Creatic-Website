@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors */
+    --color-primary: #DC2626; /* red-600 */
+    --color-primary-foreground: #FFFFFF; /* white */
+    --color-secondary: #7F1D1D; /* red-900 */
+    --color-secondary-foreground: #FFFFFF; /* white */
+    
+    /* Accent Colors */
+    --color-accent: #F59E0B; /* amber-500 */
+    --color-accent-foreground: #111827; /* gray-900 */
+    
+    /* Background Colors */
+    --color-background: #FFFFFF; /* white */
+    --color-foreground: #111827; /* gray-900 */
+    --color-surface: #F9FAFB; /* gray-50 */
+    
+    /* Card Colors */
+    --color-card: #FFFFFF; /* white */
+    --color-card-foreground: #111827; /* gray-900 */
+    
+    /* Popover Colors */
+    --color-popover: #FFFFFF; /* white */
+    --color-popover-foreground: #111827; /* gray-900 */
+    
+    /* Muted Colors */
+    --color-muted: #F3F4F6; /* gray-100 */
+    --color-muted-foreground: #6B7280; /* gray-500 */
+    
+    /* Border & Input */
+    --color-border: #E5E7EB; /* gray-200 */
+    --color-input: #E5E7EB; /* gray-200 */
+    --color-ring: #DC2626; /* red-600 */
+    
+    /* State Colors */
+    --color-destructive: #EF4444; /* red-500 */
+    --color-destructive-foreground: #FFFFFF; /* white */
+    --color-success: #10B981; /* emerald-500 */
+    --color-success-foreground: #FFFFFF; /* white */
+    --color-warning: #F59E0B; /* amber-500 */
+    --color-warning-foreground: #111827; /* gray-900 */
+    --color-error: #EF4444; /* red-500 */
+    --color-error-foreground: #FFFFFF; /* white */
+    
+    /* Additional Brand Colors */
+    --color-hover: #EF4444; /* red-500 */
+    --color-hover-foreground: #FFFFFF; /* white */
+    
+    /* Typography */
+    --font-headline: 'Inter', sans-serif;
+    --font-body: 'Source Sans 3', sans-serif;
+    --font-accent: 'JetBrains Mono', monospace;
+    
+    /* Spacing */
+    --spacing-base: 8px;
+    --spacing-standard: 24px;
+    --spacing-section: 48px;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    
+    /* Shadows */
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --shadow-interactive: 0 8px 32px rgba(220, 38, 38, 0.15);
+    --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark {
+    /* Primary Colors - keep brand red */
+    --color-primary: #EF4444; /* red-500 slightly lighter for dark */
+    --color-primary-foreground: #FFFFFF;
+    --color-secondary: #991B1B; /* red-800 */
+    --color-secondary-foreground: #FFFFFF;
+    
+    /* Accent Colors */
+    --color-accent: #F59E0B;
+    --color-accent-foreground: #111827;
+    
+    /* Background Colors - deep black */
+    --color-background: #080808;
+    --color-foreground: #F1F5F9; /* slate-100 */
+    --color-surface: #111111;
+    
+    /* Card Colors - near black */
+    --color-card: #131313;
+    --color-card-foreground: #F1F5F9;
+    
+    /* Popover Colors */
+    --color-popover: #131313;
+    --color-popover-foreground: #F1F5F9;
+    
+    /* Muted Colors */
+    --color-muted: #1c1c1c;
+    --color-muted-foreground: #94A3B8; /* slate-400 */
+    
+    /* Border & Input */
+    --color-border: #252525;
+    --color-input: #1c1c1c;
+    --color-ring: #EF4444;
+    
+    /* State Colors */
+    --color-destructive: #EF4444;
+    --color-destructive-foreground: #FFFFFF;
+    --color-success: #10B981;
+    --color-success-foreground: #FFFFFF;
+    --color-warning: #F59E0B;
+    --color-warning-foreground: #111827;
+    --color-error: #EF4444;
+    --color-error-foreground: #FFFFFF;
+    
+    /* Additional Brand Colors */
+    --color-hover: #EF4444;
+    --color-hover-foreground: #FFFFFF;
+    
+    /* Shadows - stronger red glow */
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.7);
+    --shadow-interactive: 0 8px 32px rgba(239, 68, 68, 0.35);
+    --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.8);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headline);
+  }
+}
+
+@layer utilities {
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes startupIntroFadeOut {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.015);
+    }
+  }
+
+  @keyframes startupIntroLogoIn {
+    0% {
+      opacity: 0;
+      transform: translateY(12px) scale(0.92);
+      filter: blur(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes startupIntroPulse {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: translate(-50%, -50%) scale(0.95);
+    }
+    50% {
+      opacity: 0.7;
+      transform: translate(-50%, -50%) scale(1.03);
+    }
+  }
+
+  @keyframes startupIntroRing {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    35% {
+      opacity: 0.85;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.15);
+    }
+  }
+
+  @keyframes startupIntroCopy {
+    0% {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes startupIntroGrid {
+    0% {
+      opacity: 0;
+      transform: scale(1.04);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .startup-intro-enter {
+    animation: startupIntroGrid 0.5s ease-out both;
+  }
+
+  .startup-intro-leave {
+    animation: startupIntroFadeOut 0.55s ease forwards;
+  }
+
+  .startup-intro-grid {
+    background-image:
+      linear-gradient(rgba(220, 38, 38, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(220, 38, 38, 0.08) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(circle at center, black, transparent 82%);
+  }
+
+  .startup-intro-logo {
+    animation: startupIntroLogoIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .startup-intro-copy {
+    animation: startupIntroCopy 0.7s ease-out 0.28s both;
+  }
+
+  .startup-intro-pulse {
+    animation: startupIntroPulse 2.2s ease-in-out infinite;
+  }
+
+  .startup-intro-ring {
+    animation: startupIntroRing 1.8s ease-out infinite;
+  }
+
+  .startup-intro-ring-delayed {
+    animation: startupIntroRing 1.8s ease-out 0.4s infinite;
+  }
+
+  /* ===== DARK MODE RED SHINE & GLOW EFFECTS ===== */
+
+  /* Page body background with subtle red radial glow at top */
+  .dark body {
+    background: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(220, 38, 38, 0.07) 0%, transparent 70%), #080808;
+  }
+
+  /* Section backgrounds with red shine */
+  .dark .bg-surface {
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(220, 38, 38, 0.06) 0%, transparent 65%), #111111 !important;
+  }
+
+  .dark .bg-gradient-to-br {
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(220, 38, 38, 0.08) 0%, transparent 70%), #080808 !important;
+  }
+
+  /* Card hover — red glow border + lift */
+  .dark .bg-card {
+    background: #131313;
+    border-color: #252525;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .dark .group:hover .bg-card,
+  .dark .bg-card:hover {
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 8px 32px rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+  }
+
+  /* Hover on cards that use hover:shadow-interactive */
+  .dark .hover\:shadow-interactive:hover {
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3), 0 8px 40px rgba(239, 68, 68, 0.25) !important;
+  }
+
+  /* Nav link hover — red text glow */
+  .dark nav a:hover {
+    text-shadow: 0 0 14px rgba(239, 68, 68, 0.6);
+  }
+
+  /* Header background — dark with subtle red top edge glow */
+  .dark header {
+    background: linear-gradient(180deg, rgba(220, 38, 38, 0.05) 0%, #0d0d0d 100%) !important;
+    border-bottom: 1px solid rgba(220, 38, 38, 0.12);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(220, 38, 38, 0.1);
+  }
+
+  /* Primary buttons — red glow on hover */
+  .dark a[class*="bg-primary"]:hover,
+  .dark button[class*="bg-primary"]:hover {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5), 0 4px 16px rgba(239, 68, 68, 0.3) !important;
+  }
+
+  /* Outline/border buttons — red glow on hover */
+  .dark a[class*="border-primary"]:hover,
+  .dark button[class*="border-primary"]:hover {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.3), inset 0 0 16px rgba(239, 68, 68, 0.05) !important;
+    background: rgba(239, 68, 68, 0.08) !important;
+  }
+
+  /* Testimonial / large card sections */
+  .dark .rounded-2xl.bg-card,
+  .dark .rounded-xl.bg-card {
+    background: linear-gradient(135deg, #161616 0%, #111111 100%) !important;
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1), 0 8px 40px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .dark .rounded-2xl.bg-card:hover,
+  .dark .rounded-xl.bg-card:hover {
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 8px 40px rgba(239, 68, 68, 0.15) !important;
+  }
+
+  /* CTA banner (bg-primary sections) — enhanced red glow */
+  .dark .bg-primary.rounded-2xl {
+    box-shadow: 0 0 60px rgba(239, 68, 68, 0.3), 0 0 120px rgba(239, 68, 68, 0.1) !important;
+  }
+
+  /* Icon containers on hover */
+  .dark .group:hover [class*="bg-primary"] {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+  }
+
+  /* Footer / bottom sections */
+  .dark footer {
+    background: linear-gradient(0deg, rgba(220, 38, 38, 0.06) 0%, #0a0a0a 40%) !important;
+    border-top: 1px solid rgba(220, 38, 38, 0.12);
+  }
+
+  /* WhatsApp button — keep green but add subtle glow */
+  .dark .bg-success:hover {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4) !important;
+  }
+
+  /* Input fields */
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3), 0 0 12px rgba(239, 68, 68, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+  }
+
+  /* Horizontal rules / dividers */
+  .dark .border-border {
+    border-color: #252525;
+  }
+
+  .dark hr {
+    border-color: rgba(220, 38, 38, 0.15);
+    box-shadow: 0 1px 6px rgba(220, 38, 38, 0.1);
+  }
+}
