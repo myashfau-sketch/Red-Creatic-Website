@@ -3,7 +3,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Header from '../../components/common/Header';
 import Footer from '../homepage/components/Footer';
-import Image from 'next/image';
 import Icon from '../../components/ui/AppIcon';
 import { PageHero, AnimatedSection } from '../../components/common/AnimatedSection';
 interface GalleryItem {
@@ -42,6 +41,15 @@ const shuffleItems = (items: GalleryItem[]): DisplayGalleryItem[] =>
       sizeVariant: SIZE_VARIANTS[(index + Math.floor(Math.random() * SIZE_VARIANTS.length)) % SIZE_VARIANTS.length]
     }));
 
+const SIZE_WEIGHTS: Record<string, number> = {
+  'aspect-[4/5]': 1.25,
+  'aspect-[3/4]': 1.33,
+  'aspect-square': 1,
+  'aspect-[4/3]': 0.75,
+  'aspect-[5/4]': 0.8,
+  'aspect-[3/5]': 1.67,
+};
+
 export default function GalleryPageClient({
   initialGalleryItems,
   serviceOptions,
@@ -51,7 +59,7 @@ export default function GalleryPageClient({
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(5);
+  const [zoomLevel, setZoomLevel] = useState(8);
   const [viewportWidth, setViewportWidth] = useState(1440);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [shuffledItems, setShuffledItems] = useState<DisplayGalleryItem[]>([]);
@@ -104,10 +112,26 @@ export default function GalleryPageClient({
   const selectedCount = selectedServices.length + selectedProducts.length;
   const currentColumnCount = useMemo(() => {
     if (viewportWidth < 640) return 3;
-    if (viewportWidth < 1024) return Math.min(Math.max(zoomLevel - 1, 2), 4);
-    if (viewportWidth < 1280) return Math.min(Math.max(zoomLevel, 3), 6);
+    if (viewportWidth < 1024) return Math.min(Math.max(zoomLevel - 2, 2), 4);
+    if (viewportWidth < 1280) return Math.min(Math.max(zoomLevel - 1, 4), 6);
     return zoomLevel;
   }, [viewportWidth, zoomLevel]);
+  const masonryColumns = useMemo(() => {
+    const columns = Array.from({ length: currentColumnCount }, () => ({
+      height: 0,
+      items: [] as DisplayGalleryItem[],
+    }));
+
+    visibleItems.forEach((item) => {
+      const targetColumn = columns.reduce((bestIndex, column, index, allColumns) =>
+        column.height < allColumns[bestIndex].height ? index : bestIndex, 0);
+
+      columns[targetColumn].items.push(item);
+      columns[targetColumn].height += SIZE_WEIGHTS[item.sizeVariant] ?? 1;
+    });
+
+    return columns.map((column) => column.items);
+  }, [currentColumnCount, visibleItems]);
 
   const toggleSelection = (
     value: string,
@@ -450,34 +474,42 @@ export default function GalleryPageClient({
 
           <div className={isFullscreenMode ? 'px-4 pt-4' : 'container mx-auto px-4 pt-8'}>
             <div
-              className="gap-4 space-y-4"
+              className="grid gap-4"
               style={{
-                columnCount: currentColumnCount,
-                columnGap: '1rem'
+                gridTemplateColumns: `repeat(${currentColumnCount}, minmax(0, 1fr))`,
               }}>
-              {visibleItems.map((item, idx) => (
-                <div
-                  key={`${item.id}-${item.sizeVariant}`}
-                  ref={(node) => {
-                    if (node) {
-                      itemRefs.current.set(item.id, node);
-                    } else {
-                      itemRefs.current.delete(item.id);
-                    }
-                  }}
-                  className="break-inside-avoid cursor-pointer group"
-                  onClick={() => openLightbox(idx)}
-                  style={{ opacity: 0, animation: `fadeInUp 0.5s ease forwards ${idx * 35}ms` }}>
-                  <div className={`relative overflow-hidden rounded-[1.4rem] ${item.sizeVariant}`}>
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  </div>
+              {masonryColumns.map((column, columnIndex) => (
+                <div key={`column-${columnIndex}`} className="space-y-4">
+                  {column.map((item) => {
+                    const idx = visibleItems.findIndex((entry) => entry.id === item.id);
+
+                    return (
+                      <div
+                        key={`${item.id}-${item.sizeVariant}`}
+                        ref={(node) => {
+                          if (node) {
+                            itemRefs.current.set(item.id, node);
+                          } else {
+                            itemRefs.current.delete(item.id);
+                          }
+                        }}
+                        className="group cursor-pointer"
+                        onClick={() => openLightbox(idx)}
+                        style={{ opacity: 0, animation: `fadeInUp 0.5s ease forwards ${idx * 35}ms` }}>
+                        <div className={`relative overflow-hidden rounded-[1.4rem] ${item.sizeVariant}`}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={item.src}
+                            alt={item.alt}
+                            loading="lazy"
+                            decoding="async"
+                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
@@ -522,14 +554,14 @@ export default function GalleryPageClient({
             <Icon name="ChevronLeftIcon" size={40} />
           </button>
           <div className="relative max-w-4xl max-h-[80vh] w-full" onClick={(event) => event.stopPropagation()}>
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={visibleItems[lightboxIndex].src}
               alt={visibleItems[lightboxIndex].alt}
-              width={1200}
-              height={800}
+              loading="eager"
+              decoding="async"
               className="max-h-[80vh] w-full rounded-lg object-contain"
             />
-            <p className="mt-3 text-center text-sm text-white/80">{visibleItems[lightboxIndex].alt}</p>
           </div>
           <button
             className="absolute right-4 top-1/2 -translate-y-1/2 text-white transition-colors hover:text-primary"
