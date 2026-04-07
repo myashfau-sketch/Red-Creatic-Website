@@ -9,6 +9,7 @@ import { fallbackServices, type Service } from '../../../data/services';
 
 interface WhatWeOfferInteractiveProps {
   initialServices?: Service[];
+  popupEnabled?: boolean;
 }
 
 const shuffleServices = (items: Service[]) => {
@@ -22,7 +23,7 @@ const shuffleServices = (items: Service[]) => {
   return shuffled;
 };
 
-const WhatWeOfferInteractive = ({ initialServices = fallbackServices }: WhatWeOfferInteractiveProps) => {
+const WhatWeOfferInteractive = ({ initialServices = fallbackServices, popupEnabled = true }: WhatWeOfferInteractiveProps) => {
   const [isHydrated, setIsHydrated] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,9 +38,10 @@ const WhatWeOfferInteractive = ({ initialServices = fallbackServices }: WhatWeOf
   }, [initialServices]);
 
   const handleOpenModal = useCallback((service: Service) => {
+    if (!popupEnabled) return;
     setSelectedService(service);
     setIsModalOpen(true);
-  }, []);
+  }, [popupEnabled]);
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
@@ -78,7 +80,7 @@ const WhatWeOfferInteractive = ({ initialServices = fallbackServices }: WhatWeOf
           <div className="mb-14 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
             {services.map((service, idx) => (
               <AnimatedSection key={service.id} animation="fade-up" delay={idx * 50}>
-                <ServiceCard service={service} onOpenModal={handleOpenModal} />
+                <ServiceCard service={service} onOpenModal={handleOpenModal} popupEnabled={popupEnabled} />
               </AnimatedSection>
             ))}
           </div>

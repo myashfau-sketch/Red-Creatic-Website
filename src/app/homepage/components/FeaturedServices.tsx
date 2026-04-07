@@ -49,8 +49,9 @@ const FeaturedServices = ({ initialServices }: { initialServices: Service[] }) =
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary sm:h-14 sm:w-14">
                     <Icon
                       name={service.icon as any}
+                      svgCode={service.customIconSvg}
                       size={28}
-                      className="text-primary transition-colors duration-300 group-hover:text-white"
+                      className="text-primary transition-colors duration-300 group-hover:text-black dark:group-hover:text-white"
                     />
                   </div>
                 </div>

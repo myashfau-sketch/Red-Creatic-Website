@@ -60,6 +60,8 @@ export default async function AdminSitePagesPage() {
             {sitePageConfigs.map((page) => {
               const setting = settings.get(page.slug);
               const isEnabled = setting?.is_enabled ?? true;
+              const supportsPopupToggle = ['what-we-offer', 'products', 'projects', 'partnerships'].includes(page.slug);
+              const isPopupEnabled = setting?.is_popup_enabled ?? true;
 
               return (
                 <form
@@ -82,6 +84,17 @@ export default async function AdminSitePagesPage() {
                         }`}>
                         {isEnabled ? 'Live' : 'Hidden'}
                       </span>
+                      {supportsPopupToggle && (
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${
+                            isPopupEnabled
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                          }`}
+                        >
+                          {isPopupEnabled ? 'Popups On' : 'Popups Off'}
+                        </span>
+                      )}
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">{page.path}</p>
                     <p className="mt-1 text-xs text-muted-foreground/80">
@@ -114,6 +127,17 @@ export default async function AdminSitePagesPage() {
                       />
                       Page enabled
                     </label>
+                    {supportsPopupToggle && (
+                      <label className="inline-flex items-center gap-3 rounded-xl border border-border px-3 py-2 text-sm font-medium text-foreground">
+                        <input
+                          type="checkbox"
+                          name="is_popup_enabled"
+                          defaultChecked={isPopupEnabled}
+                          className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                        />
+                        Detail popups enabled
+                      </label>
+                    )}
                     <button
                       type="submit"
                       className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90">

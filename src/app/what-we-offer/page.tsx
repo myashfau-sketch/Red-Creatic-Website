@@ -3,7 +3,7 @@ import Header from '../../components/common/Header';
 import WhatWeOfferInteractive from './components/WhatWeOfferInteractive';
 import Footer from '../homepage/components/Footer';
 import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { isSitePageEnabled, type SitePageSearchParams } from '../../lib/site-page-settings';
+import { isSitePageEnabled, isSitePagePopupEnabled, type SitePageSearchParams } from '../../lib/site-page-settings';
 import { fallbackServices, type Service } from '../../data/services';
 import type { ServiceRecord } from '../../types/database';
 import { notFound } from 'next/navigation';
@@ -21,8 +21,12 @@ function mapServiceRecord(record: ServiceRecord, index: number): Service | null 
     title: record.title,
     description: record.description,
     icon: record.icon || 'WrenchScrewdriverIcon',
+    customIconSvg: record.custom_icon_svg || undefined,
     category: record.category || 'Service',
+    mainImageUrl: record.main_image_url || undefined,
+    galleryImages: record.gallery_images ?? [],
     industries: record.industries ?? [],
+    productIdeas: record.product_ideas ?? [],
     features: record.features ?? [],
     technicalSpecs: {
       materials: record.materials ?? [],
@@ -41,8 +45,10 @@ export default async function WhatWeOfferPage({
   }
 
   let services = fallbackServices;
+  let popupEnabled = true;
 
   try {
+    popupEnabled = await isSitePagePopupEnabled('what-we-offer');
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from('services')
@@ -68,7 +74,7 @@ export default async function WhatWeOfferPage({
     <>
       <Header />
       <main className="min-h-screen bg-background pt-16">
-        <WhatWeOfferInteractive initialServices={services} />
+        <WhatWeOfferInteractive initialServices={services} popupEnabled={popupEnabled} />
       </main>
       <Footer />
     </>

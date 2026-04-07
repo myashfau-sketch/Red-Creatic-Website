@@ -26,6 +26,7 @@ interface PartnershipsPageClientProps {
   productOptions: string[];
   serviceOptions: string[];
   yearOptions: string[];
+  popupEnabled?: boolean;
 }
 
 const shuffleProjects = (items: ProjectCardItem[]) => {
@@ -598,6 +599,7 @@ export default function PartnershipsPageClient({
   productOptions,
   serviceOptions,
   yearOptions,
+  popupEnabled = true,
 }: PartnershipsPageClientProps) {
   const [selectedProject, setSelectedProject] = useState<ProjectCardItem | null>(null);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
@@ -849,7 +851,7 @@ export default function PartnershipsPageClient({
               <div className="grid grid-cols-2 gap-3 sm:gap-6 xl:grid-cols-4">
                 {displayProjects.map((project, idx) => (
                   <AnimatedSection key={project.id} animation="fade-up" delay={idx * 80}>
-                    <ProjectCard project={project} onClick={() => setSelectedProject(project)} />
+                    <ProjectCard project={project} onClick={() => popupEnabled && setSelectedProject(project)} />
                   </AnimatedSection>
                 ))}
               </div>
@@ -864,7 +866,7 @@ export default function PartnershipsPageClient({
       </main>
       <Footer />
 
-      {selectedProject && (
+      {popupEnabled && selectedProject && (
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
     </div>

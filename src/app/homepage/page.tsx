@@ -50,7 +50,9 @@ function mapServiceRecord(record: ServiceRecord, index: number): Service | null 
     title: record.title,
     description: record.description,
     icon: record.icon || 'WrenchScrewdriverIcon',
+    customIconSvg: record.custom_icon_svg || undefined,
     category: record.category || 'Service',
+    productIdeas: record.product_ideas ?? [],
     industries: record.industries ?? [],
     features: record.features ?? [],
     technicalSpecs: {

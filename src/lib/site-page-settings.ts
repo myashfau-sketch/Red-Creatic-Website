@@ -77,3 +77,22 @@ export async function isSitePageEnabled(
     return true;
   }
 }
+
+export async function isSitePagePopupEnabled(slug: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('site_page_settings')
+      .select('is_popup_enabled')
+      .eq('slug', slug)
+      .maybeSingle();
+
+    if (error) {
+      return true;
+    }
+
+    return data?.is_popup_enabled ?? true;
+  } catch {
+    return true;
+  }
+}

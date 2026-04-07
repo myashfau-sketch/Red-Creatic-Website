@@ -27,8 +27,12 @@ export interface ServiceRecord {
   title: string | null;
   description: string | null;
   icon: string | null;
+  custom_icon_svg: string | null;
   category: string | null;
+  main_image_url: string | null;
+  gallery_images: string[] | null;
   industries: string[] | null;
+  product_ideas: string[] | null;
   features: string[] | null;
   materials: string[] | null;
   quality_standards: string[] | null;
@@ -41,6 +45,7 @@ export interface ProductRecord {
   created_at: string;
   name: string | null;
   description: string | null;
+  category: string | null;
   main_image_url: string | null;
   main_image_alt: string | null;
   gallery_images: { src: string; alt: string }[] | null;
@@ -119,4 +124,5 @@ export interface SitePageSettingRecord {
   slug: string;
   title: string | null;
   is_enabled: boolean | null;
+  is_popup_enabled: boolean | null;
 }

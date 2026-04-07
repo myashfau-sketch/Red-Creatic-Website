@@ -28,6 +28,7 @@ export async function upsertProduct(formData: FormData) {
   const id = getTrimmedValue(formData.get('id'));
   const name = getTrimmedValue(formData.get('name'));
   const description = getTrimmedValue(formData.get('description'));
+  const category = getTrimmedValue(formData.get('category'));
   const mainImageUrl = getTrimmedValue(formData.get('main_image_url'));
   const mainImageAlt = getTrimmedValue(formData.get('main_image_alt'));
   const isPublished = formData.get('is_published') === 'on';
@@ -36,6 +37,7 @@ export async function upsertProduct(formData: FormData) {
   const payload = {
     name: name || null,
     description: description || null,
+    category: category || null,
     main_image_url: mainImageUrl || null,
     main_image_alt: mainImageAlt || null,
     gallery_images: galleryImages,

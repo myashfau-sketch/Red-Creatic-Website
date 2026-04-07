@@ -9,6 +9,7 @@ interface ServiceCardProps {
     title: string;
     description: string;
     icon: string;
+    customIconSvg?: string;
     category: string;
     features: string[];
     technicalSpecs: {
@@ -17,9 +18,10 @@ interface ServiceCardProps {
     };
   };
   onOpenModal: (service: any) => void;
+  popupEnabled?: boolean;
 }
 
-const ServiceCard = ({ service, onOpenModal }: ServiceCardProps) => {
+const ServiceCard = ({ service, onOpenModal, popupEnabled = true }: ServiceCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -34,8 +36,9 @@ const ServiceCard = ({ service, onOpenModal }: ServiceCardProps) => {
         <div className={`w-16 h-16 rounded-lg bg-surface flex items-center justify-center transition-all duration-300 mb-4 ${isHovered ? 'bg-primary' : ''}`}>
           <Icon 
             name={service.icon as any} 
+            svgCode={service.customIconSvg}
             size={32} 
-            className={`transition-colors duration-300 ${isHovered ? 'text-primary-foreground' : 'text-primary'}`}
+            className={`transition-colors duration-300 ${isHovered ? 'text-black dark:text-primary-foreground' : 'text-primary'}`}
           />
         </div>
 
@@ -57,7 +60,7 @@ const ServiceCard = ({ service, onOpenModal }: ServiceCardProps) => {
         {/* Centered View Details */}
         <div className="flex items-center justify-center gap-2 mt-auto">
           <span className="text-sm font-medium font-body text-primary">
-            View Details
+            {popupEnabled ? 'View Details' : 'Details Coming Soon'}
           </span>
           <Icon 
             name="ArrowRightIcon" 

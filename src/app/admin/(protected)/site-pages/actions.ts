@@ -13,6 +13,7 @@ export async function upsertSitePageSetting(formData: FormData) {
   const slug = getTrimmedValue(formData.get('slug'));
   const title = getTrimmedValue(formData.get('title'));
   const isEnabled = formData.get('is_enabled') === 'on';
+  const isPopupEnabled = formData.get('is_popup_enabled') === 'on';
 
   if (!slug) {
     throw new Error('Missing page slug.');
@@ -22,6 +23,7 @@ export async function upsertSitePageSetting(formData: FormData) {
     slug,
     title: title || slug,
     is_enabled: isEnabled,
+    is_popup_enabled: isPopupEnabled,
   };
 
   const { error } = await supabase.from('site_page_settings').upsert(payload, {
@@ -41,4 +43,3 @@ export async function upsertSitePageSetting(formData: FormData) {
 
   revalidatePath('/homepage');
 }
-

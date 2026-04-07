@@ -9,6 +9,7 @@ type IconVariant = 'outline' | 'solid';
 
 interface IconProps {
     name: string; // Changed to string to accept dynamic values
+    svgCode?: string;
     variant?: IconVariant;
     size?: number;
     className?: string;
@@ -19,6 +20,7 @@ interface IconProps {
 
 function Icon({
     name,
+    svgCode,
     variant = 'outline',
     size = 24,
     className = '',
@@ -26,6 +28,25 @@ function Icon({
     disabled = false,
     ...props
 }: IconProps) {
+    const normalizedSvgCode = svgCode?.trim();
+    const svgStartIndex = normalizedSvgCode?.toLowerCase().indexOf('<svg') ?? -1;
+    const extractedSvgCode =
+        svgStartIndex >= 0 && normalizedSvgCode
+            ? normalizedSvgCode.slice(svgStartIndex)
+            : '';
+
+    if (extractedSvgCode) {
+        return (
+            <span
+                className={`inline-flex items-center justify-center [&>svg]:h-full [&>svg]:w-full ${disabled ? 'opacity-50 cursor-not-allowed' : onClick ? 'cursor-pointer hover:opacity-80' : ''} ${className}`}
+                style={{ width: size, height: size }}
+                onClick={disabled ? undefined : onClick}
+                dangerouslySetInnerHTML={{ __html: extractedSvgCode }}
+                {...props}
+            />
+        );
+    }
+
     const iconSet = variant === 'solid' ? HeroIconsSolid : HeroIcons;
     const IconComponent = iconSet[name as keyof typeof iconSet] as React.ComponentType<any>;
 

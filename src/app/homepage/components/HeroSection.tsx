@@ -41,6 +41,7 @@ type ShowcaseSlide =
       body: string;
       meta: string;
       icon: string;
+      customIconSvg?: string;
     }
   | {
       id: string;
@@ -111,6 +112,7 @@ const HeroSection = ({ testimonials, services, products, projects }: HeroSection
         body: selectedService.description,
         meta: selectedService.category,
         icon: selectedService.icon,
+        customIconSvg: selectedService.customIconSvg,
       },
       {
         id: `project-${selectedProject.id}`,
@@ -277,7 +279,7 @@ const HeroSection = ({ testimonials, services, products, projects }: HeroSection
                     <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary via-primary/90 to-red-700 p-4 text-white sm:p-6 lg:p-8">
                       <div className="flex h-full w-full flex-col items-center justify-center text-center">
                         <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/12 backdrop-blur sm:h-24 sm:w-24">
-                          <Icon name={slide.icon} size={38} className="text-white sm:text-[44px]" />
+                          <Icon name={slide.icon} svgCode={slide.customIconSvg} size={38} className="text-white sm:text-[44px]" />
                         </div>
                         <div className="mb-3 inline-flex rounded-full bg-white/14 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur">
                           {slide.label}

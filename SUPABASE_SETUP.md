@@ -39,6 +39,7 @@
 2. Create a bucket named `gallery-images`.
 3. Make it public if you want direct public image URLs.
 4. Add a storage policy that allows authenticated users to upload files.
+5. This bucket is used for gallery items, projects, partnerships, and service photos.
 
 ## 6. Create the client logo storage bucket
 

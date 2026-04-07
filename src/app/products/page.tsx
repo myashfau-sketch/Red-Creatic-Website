@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { isSitePageEnabled, type SitePageSearchParams } from '../../lib/site-page-settings';
+import { isSitePageEnabled, isSitePagePopupEnabled, type SitePageSearchParams } from '../../lib/site-page-settings';
 import { fallbackProducts, type Product } from '../../data/products';
 import type { ProductRecord } from '../../types/database';
 import ProductsPageClient from './ProductsPageClient';
@@ -15,6 +15,7 @@ function mapProductRecord(record: ProductRecord, index: number): Product | null 
     id: index + 1,
     name: record.name,
     description: record.description,
+    category: record.category || undefined,
     mainImage: record.main_image_url,
     mainImageAlt,
     images: galleryImages.length > 0
@@ -33,8 +34,10 @@ export default async function ProductsPage({
   }
 
   let products = fallbackProducts;
+  let popupEnabled = true;
 
   try {
+    popupEnabled = await isSitePagePopupEnabled('products');
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from('products')
@@ -56,5 +59,5 @@ export default async function ProductsPage({
     // Fall back to existing product data if Supabase is unavailable.
   }
 
-  return <ProductsPageClient initialProducts={products} />;
+  return <ProductsPageClient initialProducts={products} popupEnabled={popupEnabled} />;
 }

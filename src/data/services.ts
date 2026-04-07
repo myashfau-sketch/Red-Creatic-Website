@@ -3,8 +3,12 @@ export interface Service {
   title: string;
   description: string;
   icon: string;
+  customIconSvg?: string;
   category: string;
+  mainImageUrl?: string;
+  galleryImages?: string[];
   industries: string[];
+  productIdeas?: string[];
   features: string[];
   technicalSpecs: {
     materials: string[];

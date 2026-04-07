@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { isSitePageEnabled, type SitePageSearchParams } from '../../lib/site-page-settings';
+import { isSitePageEnabled, isSitePagePopupEnabled, type SitePageSearchParams } from '../../lib/site-page-settings';
 import type { ProjectRecord } from '../../types/database';
 import type { ProductRecord, ServiceRecord } from '../../types/database';
 import { fallbackProducts } from '../../data/products';
@@ -110,6 +110,7 @@ export default async function ProjectsPage({
   }
 
   let projects = fallbackProjects;
+  let popupEnabled = true;
   let serviceOptions = Array.from(new Set(fallbackProjects.flatMap((project) => project.works))).sort();
   let productOptions = Array.from(new Set(fallbackProjects.flatMap((project) => project.products))).sort();
   let yearOptions = Array.from(
@@ -121,6 +122,7 @@ export default async function ProjectsPage({
   ).sort((a, b) => b.localeCompare(a));
 
   try {
+    popupEnabled = await isSitePagePopupEnabled('projects');
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from('projects')
@@ -209,6 +211,7 @@ export default async function ProjectsPage({
       productOptions={productOptions.length > 0 ? productOptions : fallbackProducts.map((product) => product.name)}
       serviceOptions={serviceOptions}
       yearOptions={yearOptions}
+      popupEnabled={popupEnabled}
     />
   );
 }

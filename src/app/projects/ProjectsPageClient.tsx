@@ -27,6 +27,7 @@ interface ProjectsPageClientProps {
   productOptions: string[];
   serviceOptions: string[];
   yearOptions: string[];
+  popupEnabled?: boolean;
 }
 
 const shuffleProjects = (items: ProjectCardItem[]) => {
@@ -486,6 +487,7 @@ export default function ProjectsPageClient({
   productOptions,
   serviceOptions,
   yearOptions,
+  popupEnabled = true,
 }: ProjectsPageClientProps) {
   const [selectedProject, setSelectedProject] = useState<ProjectCardItem | null>(null);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
@@ -737,7 +739,7 @@ export default function ProjectsPageClient({
               <div className="grid grid-cols-2 gap-3 sm:gap-6 xl:grid-cols-4">
                 {displayProjects.map((project, idx) => (
                   <AnimatedSection key={project.id} animation="fade-up" delay={idx * 80}>
-                    <ProjectCard project={project} onClick={() => setSelectedProject(project)} />
+                    <ProjectCard project={project} onClick={() => popupEnabled && setSelectedProject(project)} />
                   </AnimatedSection>
                 ))}
               </div>
@@ -752,7 +754,7 @@ export default function ProjectsPageClient({
       </main>
       <Footer />
 
-      {selectedProject && (
+      {popupEnabled && selectedProject && (
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
     </div>
