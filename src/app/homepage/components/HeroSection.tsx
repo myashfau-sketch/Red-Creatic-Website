@@ -65,20 +65,20 @@ type ShowcaseSlide =
       alt: string;
     };
 
-function shuffleItems<T>(items: T[]) {
-  const copy = [...items];
-
-  for (let index = copy.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
-  }
-
-  return copy;
+function getRandomIndex(length: number) {
+  if (length <= 1) return 0;
+  return Math.floor(Math.random() * length);
 }
 
 const HeroSection = ({ testimonials, services, products, projects }: HeroSectionProps) => {
   const [isHydrated, setIsHydrated] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [featuredSelection, setFeaturedSelection] = useState({
+    testimonial: 0,
+    service: 0,
+    project: 0,
+    product: 0,
+  });
   const pauseUntilRef = useRef(0);
 
   useEffect(() => {
@@ -86,10 +86,10 @@ const HeroSection = ({ testimonials, services, products, projects }: HeroSection
   }, []);
 
   const showcaseSlides = useMemo<ShowcaseSlide[]>(() => {
-    const selectedTestimonial = testimonials[0];
-    const selectedService = services[0];
-    const selectedProject = projects[0];
-    const selectedProduct = products[0];
+    const selectedTestimonial = testimonials[featuredSelection.testimonial] ?? testimonials[0];
+    const selectedService = services[featuredSelection.service] ?? services[0];
+    const selectedProject = projects[featuredSelection.project] ?? projects[0];
+    const selectedProduct = products[featuredSelection.product] ?? products[0];
 
     if (!selectedTestimonial || !selectedService || !selectedProject || !selectedProduct) {
       return [];
@@ -136,25 +136,20 @@ const HeroSection = ({ testimonials, services, products, projects }: HeroSection
         alt: selectedProduct.mainImageAlt,
       },
     ];
-  }, [products, projects, services, testimonials]);
+  }, [featuredSelection, products, projects, services, testimonials]);
 
   useEffect(() => {
     if (!isHydrated) return;
-
-    const shuffledTestimonials = shuffleItems(testimonials);
-    const shuffledServices = shuffleItems(services);
-    const shuffledProjects = shuffleItems(projects);
-    const shuffledProducts = shuffleItems(products);
-
-    const selectedTestimonial = shuffledTestimonials[0];
-    const selectedService = shuffledServices[0];
-    const selectedProject = shuffledProjects[0];
-    const selectedProduct = shuffledProducts[0];
-
-    if (!selectedTestimonial || !selectedService || !selectedProject || !selectedProduct) {
+    if (!testimonials.length || !services.length || !projects.length || !products.length) {
       return;
     }
 
+    setFeaturedSelection({
+      testimonial: getRandomIndex(testimonials.length),
+      service: getRandomIndex(services.length),
+      project: getRandomIndex(projects.length),
+      product: getRandomIndex(products.length),
+    });
     setCurrentSlide(0);
   }, [isHydrated, products, projects, services, testimonials]);
 

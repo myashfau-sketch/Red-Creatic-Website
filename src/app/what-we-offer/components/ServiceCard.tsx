@@ -53,7 +53,14 @@ const ServiceCard = ({ service, onOpenModal, popupEnabled = true }: ServiceCardP
         </h3>
 
         {/* Centered Description */}
-        <p className="mb-3 line-clamp-3 flex-grow text-xs leading-6 font-body text-muted-foreground sm:mb-4 sm:text-sm">
+        <p
+          className="mb-3 flex-grow overflow-hidden text-xs leading-6 font-body text-muted-foreground sm:mb-4 sm:text-sm"
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
           {service.description}
         </p>
 
