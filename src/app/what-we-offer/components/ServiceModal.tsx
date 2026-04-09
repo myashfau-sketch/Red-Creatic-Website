@@ -26,32 +26,10 @@ interface ServiceModalProps {
 
 const FALLBACK_SERVICE_IMAGE = '/assets/images/no_image.png';
 
-const productIdeasByService: Record<string, string[]> = {
-  'Laser Cutting & Engraving': ['Acrylic name boards', 'Desk plates', 'Award plaques', 'Custom gift items'],
-  'Canvas Printing': ['Wall art', 'Reception feature pieces', 'Resort room decor', 'Framed promotional visuals'],
-  'Digital Printing': ['Business cards', 'Brochures', 'Menus', 'Flyers and booklets'],
-  'Vinyl Printing': ['Shopfront stickers', 'Window graphics', 'Promotional decals', 'Event branding panels'],
-  Plotting: ['Architectural plans', 'Engineering drawings', 'Construction submissions', 'Presentation boards'],
-  'CNC Cutting and Routing': ['3D sign letters', 'Decor panels', 'Wayfinding boards', 'Custom display structures'],
-  '3D Printing': ['Scale models', 'Prototype parts', 'Display mockups', 'Custom branded pieces'],
-  'UV Printing': ['Acrylic signs', 'Branded boards', 'Custom plaques', 'Direct-printed display panels'],
-  'Vehicle Wrapping': ['Fleet branding', 'Delivery van wraps', 'Boat graphics', 'Campaign vehicle decals'],
-  'Wood Working': ['Wooden signs', 'Retail fixtures', 'Display stands', 'Interior branding pieces'],
-  'Metal Working': ['Metal sign frames', 'Fabricated lettering', 'Structural display supports', 'Outdoor branded fixtures'],
-};
-
 const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [pausedUntil, setPausedUntil] = useState<number | null>(null);
-  const safeServiceTitle = service?.title ?? '';
-  const productIdeas = service?.productIdeas?.filter(Boolean)?.length
-    ? service.productIdeas.filter(Boolean)
-    : productIdeasByService[safeServiceTitle] ?? [
-    'Custom branded pieces',
-    'Display items',
-    'Signage applications',
-    'Business-ready production outputs',
-  ];
+  const productIdeas = service?.productIdeas?.filter(Boolean) ?? [];
 
   const serviceImages = useMemo(() => {
     if (!service) return [FALLBACK_SERVICE_IMAGE];
@@ -204,21 +182,23 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
                     </div>
                   </div>
 
-                  <div className="rounded-[20px] border border-border/60 bg-surface p-4 md:rounded-[22px] md:p-5">
-                    <div className="mb-4 flex items-center justify-between gap-3">
-                      <p className="text-[11px] font-body uppercase tracking-[0.18em] text-primary/80">Product Ideas</p>
+                  {productIdeas.length > 0 ? (
+                    <div className="rounded-[20px] border border-border/60 bg-surface p-4 md:rounded-[22px] md:p-5">
+                      <div className="mb-4 flex items-center justify-between gap-3">
+                        <p className="text-[11px] font-body uppercase tracking-[0.18em] text-primary/80">Product Ideas</p>
+                      </div>
+                      <div className="grid gap-3">
+                        {productIdeas.map((idea, index) => (
+                          <div key={idea} className="flex items-start gap-3 rounded-[18px] border border-border/60 bg-card px-3.5 py-3">
+                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                              {index + 1}
+                            </span>
+                            <span className="text-sm font-body leading-6 text-foreground">{idea}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="grid gap-3">
-                      {productIdeas.map((idea, index) => (
-                        <div key={idea} className="flex items-start gap-3 rounded-[18px] border border-border/60 bg-card px-3.5 py-3">
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-                            {index + 1}
-                          </span>
-                          <span className="text-sm font-body leading-6 text-foreground">{idea}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  ) : null}
 
                   <div className="grid gap-4 lg:grid-cols-2">
                     <div className="rounded-[20px] border border-border/60 bg-surface p-4 md:rounded-[22px] md:p-5">
@@ -250,8 +230,8 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
                     <a href="/say-hello" className="flex-1 rounded-full bg-primary px-4.5 py-2.5 text-center font-body font-semibold text-primary-foreground shadow-card transition-all duration-300 hover:bg-hover hover:shadow-interactive">
                       Request Quote
                     </a>
-                    <a href="/portfolio" className="flex-1 rounded-full border border-border bg-surface px-4.5 py-2.5 text-center font-body font-semibold text-foreground transition-all duration-300 hover:bg-muted">
-                      View Portfolio
+                    <a href="/projects" className="flex-1 rounded-full border border-border bg-surface px-4.5 py-2.5 text-center font-body font-semibold text-foreground transition-all duration-300 hover:bg-muted">
+                      Open Projects
                     </a>
                   </div>
                 </div>

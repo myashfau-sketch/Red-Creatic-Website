@@ -24,6 +24,7 @@ interface GalleryPageClientProps {
 }
 
 const ITEMS_PER_PAGE = 12;
+const PRELOAD_BATCHES = 2;
 const SIZE_VARIANTS = [
   'aspect-[4/5]',
   'aspect-[3/4]',
@@ -49,6 +50,15 @@ const SIZE_WEIGHTS: Record<string, number> = {
   'aspect-[5/4]': 0.8,
   'aspect-[3/5]': 1.67,
 };
+
+function getGalleryThumbnailSrc(src: string) {
+  if (src.includes('supabase.co/storage/v1/object/public/')) {
+    const separator = src.includes('?') ? '&' : '?';
+    return `${src}${separator}width=360&quality=45&resize=contain`;
+  }
+
+  return src;
+}
 
 export default function GalleryPageClient({
   initialGalleryItems,
@@ -108,10 +118,11 @@ export default function GalleryPageClient({
   }, [initialGalleryItems, selectedServices]);
 
   const visibleItems = shuffledItems.slice(0, visibleCount);
+  const preloadItems = shuffledItems.slice(visibleCount, visibleCount + ITEMS_PER_PAGE * PRELOAD_BATCHES);
   const hasMoreItems = visibleCount < shuffledItems.length;
   const selectedCount = selectedServices.length + selectedProducts.length;
   const currentColumnCount = useMemo(() => {
-    if (viewportWidth < 640) return 3;
+    if (viewportWidth < 640) return 4;
     if (viewportWidth < 1024) return Math.min(Math.max(zoomLevel - 2, 2), 4);
     if (viewportWidth < 1280) return Math.min(Math.max(zoomLevel - 1, 4), 6);
     return zoomLevel;
@@ -473,6 +484,14 @@ export default function GalleryPageClient({
           </div>
 
           <div className={isFullscreenMode ? 'px-4 pt-4' : 'container mx-auto px-4 pt-8'}>
+            {preloadItems.length > 0 && (
+              <div aria-hidden="true" className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0">
+                {preloadItems.map((item) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={`preload-${item.id}`} src={getGalleryThumbnailSrc(item.src)} alt="" loading="eager" decoding="async" />
+                ))}
+              </div>
+            )}
             <div
               className="grid gap-4"
               style={{
@@ -499,7 +518,7 @@ export default function GalleryPageClient({
                         <div className={`relative overflow-hidden rounded-[1.4rem] ${item.sizeVariant}`}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={item.src}
+                            src={getGalleryThumbnailSrc(item.src)}
                             alt={item.alt}
                             loading="lazy"
                             decoding="async"
