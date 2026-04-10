@@ -113,7 +113,7 @@ function ServiceEditor({
     const filePath = `services/${Date.now()}-${safeName || 'service-image.jpg'}`;
 
     const { error: uploadError } = await supabase.storage.from(SERVICE_IMAGE_BUCKET).upload(filePath, selectedImageFile, {
-      cacheControl: '3600',
+        cacheControl: '31536000',
       upsert: false,
     });
 

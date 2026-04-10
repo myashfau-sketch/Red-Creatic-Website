@@ -2,24 +2,62 @@ import Link from 'next/link';
 import { createSupabaseServerClient } from '../../../../lib/supabase/server';
 import { services } from '../../../../data/services';
 import { allProducts } from '../../../../data/products';
-import type { GalleryItemRecord } from '../../../../types/database';
+import type { GalleryItemRecord, ProductRecord, ServiceRecord } from '../../../../types/database';
 import AdminGalleryManager from './AdminGalleryManager';
 import { deleteGalleryItem, upsertGalleryItem } from './actions';
 
 export default async function AdminGalleryPage() {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('gallery_items')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const [
+    { data, error },
+    { data: serviceData, error: serviceError },
+    { data: productData, error: productError },
+  ] = await Promise.all([
+    supabase
+      .from('gallery_items')
+      .select('*')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('services')
+      .select('title')
+      .eq('is_published', true)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('products')
+      .select('name')
+      .eq('is_published', true)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false }),
+  ]);
 
   if (error) {
     throw new Error(error.message);
   }
 
   const items = (data ?? []) as GalleryItemRecord[];
-  const serviceOptions = services.map((service) => service.title);
-  const productOptions = allProducts.map((product) => product.name);
+  let serviceOptions = services.map((service) => service.title);
+  let productOptions = allProducts.map((product) => product.name);
+
+  if (!serviceError && serviceData && serviceData.length > 0) {
+    const names = (serviceData as Pick<ServiceRecord, 'title'>[])
+      .map((service) => service.title)
+      .filter((title): title is string => Boolean(title));
+
+    if (names.length > 0) {
+      serviceOptions = names;
+    }
+  }
+
+  if (!productError && productData && productData.length > 0) {
+    const names = (productData as Pick<ProductRecord, 'name'>[])
+      .map((product) => product.name)
+      .filter((name): name is string => Boolean(name));
+
+    if (names.length > 0) {
+      productOptions = names;
+    }
+  }
 
   return (
     <main className="min-h-screen w-full bg-background px-4 py-4 lg:px-5 lg:py-5">

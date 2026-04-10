@@ -25,46 +25,96 @@ interface GalleryEditorProps {
   onDirtyChange: (isDirty: boolean) => void;
 }
 
-function TagChecklist({
+function TagSelector({
   legend,
   name,
   options,
   selectedValues,
-  onToggle,
+  onAdd,
+  onRemove,
 }: {
   legend: string;
   name: string;
   options: string[];
   selectedValues: string[];
-  onToggle: (value: string) => void;
+  onAdd: (value: string) => void;
+  onRemove: (value: string) => void;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const availableOptions = options.filter((option) => !selectedValues.includes(option));
+  const filteredOptions = availableOptions.filter((option) =>
+    option.toLowerCase().includes(query.toLowerCase().trim())
+  );
+
   return (
     <fieldset className="space-y-3">
       <legend className="text-sm font-medium text-foreground">{legend}</legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => {
-          const checked = selectedValues.includes(option);
+      <div className="space-y-3">
+        <button
+          type="button"
+          onClick={() => setIsOpen((current) => !current)}
+          className="flex w-full items-center justify-between rounded-xl border border-border bg-background px-4 py-3 text-left text-sm text-foreground transition-colors hover:border-primary"
+        >
+          <span>{selectedValues.length === 0 ? `Select ${legend.toLowerCase()}` : `${selectedValues.length} selected`}</span>
+          <span className={`text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}>⌄</span>
+        </button>
 
-          return (
-            <label
-              key={option}
-              className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs transition-colors ${
-                checked
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-background text-foreground'
-              }`}>
-              <input
-                type="checkbox"
-                name={name}
-                value={option}
-                checked={checked}
-                onChange={() => onToggle(option)}
-                className="sr-only"
-              />
-              <span>{option}</span>
-            </label>
-          );
-        })}
+        {isOpen && (
+          <div className="space-y-3 rounded-xl border border-border bg-card p-3">
+            <input
+              type="text"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="h-10 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-primary"
+              placeholder={`Search ${legend.toLowerCase()}`}
+            />
+            <div className="max-h-56 overflow-y-auto space-y-2">
+              {filteredOptions.length === 0 ? (
+                <p className="px-1 text-xs text-muted-foreground">No matching options found.</p>
+              ) : (
+                filteredOptions.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => {
+                      onAdd(option);
+                      setQuery('');
+                    }}
+                    className="flex w-full items-center justify-between rounded-lg border border-border/70 bg-background px-3 py-2 text-left text-sm text-foreground transition-colors hover:border-primary hover:bg-primary/5"
+                  >
+                    <span className="min-w-0 flex-1">{option}</span>
+                    <span className="text-primary">Add</span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-2">
+          {selectedValues.length === 0 ? (
+            <p className="text-xs text-muted-foreground">No {legend.toLowerCase()} selected yet.</p>
+          ) : (
+            selectedValues.map((value) => (
+              <div
+                key={value}
+                className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-3 py-2 text-xs text-foreground"
+              >
+                <input type="hidden" name={name} value={value} />
+                <span>{value}</span>
+                <button
+                  type="button"
+                  onClick={() => onRemove(value)}
+                  className="text-primary transition-colors hover:text-primary/70"
+                  aria-label={`Remove ${value}`}
+                >
+                  ×
+                </button>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </fieldset>
   );
@@ -103,16 +153,22 @@ function GalleryEditor({
     onDirtyChange(false);
   }, [item, onDirtyChange]);
 
-  const toggleTag = (
+  const addTag = (
     value: string,
     setter: React.Dispatch<React.SetStateAction<string[]>>
   ) => {
     onDirtyChange(true);
     setter((current) =>
-      current.includes(value)
-        ? current.filter((entry) => entry !== value)
-        : [...current, value]
+      current.includes(value) ? current : [...current, value]
     );
+  };
+
+  const removeTag = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    onDirtyChange(true);
+    setter((current) => current.filter((entry) => entry !== value));
   };
 
   const uploadSelectedFile = async () => {
@@ -128,7 +184,7 @@ function GalleryEditor({
     const { error } = await supabase.storage
       .from(GALLERY_BUCKET)
       .upload(filePath, selectedFile, {
-        cacheControl: '3600',
+        cacheControl: '31536000',
         upsert: false,
       });
 
@@ -270,20 +326,37 @@ function GalleryEditor({
               />
             </label>
 
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-foreground">Search Attributes</span>
+              <textarea
+                name="search_attributes"
+                defaultValue={(item?.search_attributes ?? []).join('\n')}
+                rows={4}
+                onChange={() => onDirtyChange(true)}
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                placeholder={'One attribute per line, for example:\nwood award\nred acrylic\ncorporate gifting'}
+              />
+              <p className="mt-2 text-xs text-muted-foreground">
+                These internal keywords are for future AI-style matching and search. They do not need to be shown publicly.
+              </p>
+            </label>
+
             <div className="grid gap-5 xl:grid-cols-2">
-              <TagChecklist
+              <TagSelector
                 legend="Service Tags"
                 name="service_tags"
                 options={serviceOptions}
                 selectedValues={selectedServiceTags}
-                onToggle={(value) => toggleTag(value, setSelectedServiceTags)}
+                onAdd={(value) => addTag(value, setSelectedServiceTags)}
+                onRemove={(value) => removeTag(value, setSelectedServiceTags)}
               />
-              <TagChecklist
+              <TagSelector
                 legend="Product Tags"
                 name="product_tags"
                 options={productOptions}
                 selectedValues={selectedProductTags}
-                onToggle={(value) => toggleTag(value, setSelectedProductTags)}
+                onAdd={(value) => addTag(value, setSelectedProductTags)}
+                onRemove={(value) => removeTag(value, setSelectedProductTags)}
               />
             </div>
 

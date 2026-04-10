@@ -173,7 +173,7 @@ function ProjectEditor({
     const { error: uploadError } = await supabase.storage
       .from(PROJECT_HTML_BUCKET)
       .upload(filePath, selectedHtmlFile, {
-        cacheControl: '3600',
+        cacheControl: '31536000',
         contentType: 'text/html',
         upsert: false,
       });
@@ -203,7 +203,7 @@ function ProjectEditor({
     const { error: uploadError } = await supabase.storage
       .from(PROJECT_IMAGE_BUCKET)
       .upload(filePath, selectedImageFile, {
-        cacheControl: '3600',
+        cacheControl: '31536000',
         upsert: false,
       });
 

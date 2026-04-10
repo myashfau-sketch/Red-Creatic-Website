@@ -59,28 +59,6 @@ const ProjectCard = ({ project, onClick }: { project: ProjectCardItem; onClick: 
           className="object-contain bg-surface transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      {project.images.length > 1 && (
-        <div className="hidden gap-1.5 overflow-x-auto px-3 pt-2 sm:flex">
-          {project.images.map((image, index) => (
-            <button
-              key={`${project.id}-thumb-${index}`}
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                setActiveImage(index);
-              }}
-              className={`relative h-9 w-12 flex-shrink-0 overflow-hidden rounded-md border transition-all duration-200 ${
-                activeImage === index
-                  ? 'border-primary shadow-sm'
-                  : 'border-border/60 opacity-70 hover:opacity-100'
-              }`}
-              aria-label={`View project image ${index + 1}`}
-            >
-              <Image src={image.src} alt={image.alt} fill className="object-contain bg-surface" />
-            </button>
-          ))}
-        </div>
-      )}
       <div className="space-y-1.5 p-3 pt-2.5">
         <h3 className="text-[15px] font-bold font-headline leading-snug text-foreground transition-colors duration-200 group-hover:text-primary">
           {project.title}

@@ -57,7 +57,7 @@ function ProductEditor({
   const [productName, setProductName] = useState(item?.name ?? '');
   const [imageUrl, setImageUrl] = useState(item?.main_image_url ?? '');
   const [galleryImages, setGalleryImages] = useState<ProductGalleryImage[]>(normalizeGalleryImages(item?.gallery_images ?? null, item?.name ?? ''));
-  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [pendingGalleryImageUrl, setPendingGalleryImageUrl] = useState('');
   const [isImageUrlEditorOpen, setIsImageUrlEditorOpen] = useState(false);
@@ -74,7 +74,7 @@ function ProductEditor({
     setProductName(nextName);
     setImageUrl(item?.main_image_url ?? '');
     setGalleryImages(normalizeGalleryImages(item?.gallery_images ?? null, nextName));
-    setSelectedImageFile(null);
+    setSelectedImageFiles([]);
     setPendingGalleryImageUrl('');
     setError(null);
     onDirtyChange(false);
@@ -92,37 +92,49 @@ function ProductEditor({
     [galleryImages, imageUrl, item?.main_image_alt, productName]
   );
 
-  const uploadSelectedImage = async () => {
-    if (!selectedImageFile) return null;
+  const uploadSelectedImages = async () => {
+    if (selectedImageFiles.length === 0) return [];
 
     setIsUploadingImage(true);
     setError(null);
 
-    const safeName = selectedImageFile.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
-    const filePath = `products/${Date.now()}-${safeName || 'product-image.jpg'}`;
+    const uploadedImages: ProductGalleryImage[] = [];
 
-    const { error: uploadError } = await supabase.storage.from(PRODUCT_IMAGE_BUCKET).upload(filePath, selectedImageFile, {
-      cacheControl: '3600',
-      upsert: false,
-    });
+    for (const [index, selectedImageFile] of selectedImageFiles.entries()) {
+      const safeName = selectedImageFile.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
+      const filePath = `products/${Date.now()}-${index}-${safeName || 'product-image.jpg'}`;
 
-    if (uploadError) {
-      setError(uploadError.message);
-      setIsUploadingImage(false);
-      return null;
+      const { error: uploadError } = await supabase.storage.from(PRODUCT_IMAGE_BUCKET).upload(filePath, selectedImageFile, {
+        cacheControl: '31536000',
+        upsert: false,
+      });
+
+      if (uploadError) {
+        setError(uploadError.message);
+        setIsUploadingImage(false);
+        return [];
+      }
+
+      const { data } = supabase.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(filePath);
+      uploadedImages.push({
+        src: data.publicUrl,
+        alt: buildGalleryAlt(productName, galleryImages.length + index),
+      });
     }
 
-    const { data } = supabase.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(filePath);
-    const nextImage = {
-      src: data.publicUrl,
-      alt: buildGalleryAlt(productName, galleryImages.length),
-    };
-
-    setGalleryImages((current) => (current.some((image) => image.src === nextImage.src) ? current : [...current, nextImage]));
-    setImageUrl((current) => current || nextImage.src);
-    setSelectedImageFile(null);
+    setGalleryImages((current) => {
+      const nextImages = [...current];
+      uploadedImages.forEach((image) => {
+        if (!nextImages.some((entry) => entry.src === image.src)) {
+          nextImages.push(image);
+        }
+      });
+      return nextImages;
+    });
+    setImageUrl((current) => current || uploadedImages[0]?.src || current);
+    setSelectedImageFiles([]);
     setIsUploadingImage(false);
-    return nextImage;
+    return uploadedImages;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -135,15 +147,17 @@ function ProductEditor({
       let finalImageUrl = imageUrl;
       let finalGalleryImages = [...galleryImages];
 
-      if (selectedImageFile) {
-        const uploadedImage = await uploadSelectedImage();
-        if (!uploadedImage) {
+      if (selectedImageFiles.length > 0) {
+        const uploadedImages = await uploadSelectedImages();
+        if (uploadedImages.length === 0) {
           throw new Error('Product image upload failed before the product could be saved.');
         }
-        if (!finalGalleryImages.some((image) => image.src === uploadedImage.src)) {
-          finalGalleryImages = [...finalGalleryImages, uploadedImage];
-        }
-        finalImageUrl = uploadedImage.src;
+        uploadedImages.forEach((uploadedImage) => {
+          if (!finalGalleryImages.some((image) => image.src === uploadedImage.src)) {
+            finalGalleryImages.push(uploadedImage);
+          }
+        });
+        finalImageUrl = finalImageUrl || uploadedImages[0]?.src || finalImageUrl;
       }
 
       const formData = new FormData(formElement);
@@ -166,7 +180,7 @@ function ProductEditor({
         setImageUrl('');
         setGalleryImages([]);
         setPendingGalleryImageUrl('');
-        setSelectedImageFile(null);
+        setSelectedImageFiles([]);
       }
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Failed to save product.');
@@ -329,20 +343,26 @@ function ProductEditor({
                   <input
                     type="file"
                     accept="image/*"
+                    multiple
                     onChange={(event) => {
-                      setSelectedImageFile(event.target.files?.[0] ?? null);
+                      setSelectedImageFiles(Array.from(event.target.files ?? []));
                       onDirtyChange(true);
                     }}
                     className="block w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground file:mr-3 file:rounded-full file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary"
                   />
                 </label>
+                {selectedImageFiles.length > 0 ? (
+                  <p className="text-xs text-muted-foreground">
+                    {selectedImageFiles.length} image{selectedImageFiles.length === 1 ? '' : 's'} selected and ready to add to the product gallery.
+                  </p>
+                ) : null}
                 <button
                   type="button"
-                  onClick={uploadSelectedImage}
-                  disabled={!selectedImageFile || isUploadingImage || isSaving}
+                  onClick={uploadSelectedImages}
+                  disabled={selectedImageFiles.length === 0 || isUploadingImage || isSaving}
                   className="inline-flex h-10 items-center justify-center rounded-xl border border-border px-5 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isUploadingImage ? 'Uploading...' : 'Upload Image'}
+                  {isUploadingImage ? 'Uploading...' : selectedImageFiles.length > 1 ? 'Upload Images' : 'Upload Image'}
                 </button>
               </div>
               <p className="mt-3 text-xs text-muted-foreground">
@@ -565,6 +585,7 @@ export default function AdminProductsManager({ items, upsertAction, deleteAction
   const [activeId, setActiveId] = useState<string>('new');
   const [isDirty, setIsDirty] = useState(false);
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (activeId !== 'new' && !items.some((item) => item.id === activeId)) setActiveId(items[0]?.id ?? 'new');
@@ -582,6 +603,19 @@ export default function AdminProductsManager({ items, upsertAction, deleteAction
     [items]
   );
 
+  const filteredItems = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    if (!normalizedQuery) return items;
+
+    return items.filter((item) => {
+      const name = item.name?.toLowerCase() ?? '';
+      const category = item.category?.toLowerCase() ?? '';
+
+      return name.includes(normalizedQuery) || category.includes(normalizedQuery);
+    });
+  }, [items, searchQuery]);
+
   const activeItem = activeId === 'new' ? undefined : items.find((item) => item.id === activeId);
   const selectItem = (id: string) => {
     if (id === activeId) return;
@@ -596,6 +630,16 @@ export default function AdminProductsManager({ items, upsertAction, deleteAction
           <div className="border-b border-border/70 p-5">
             <p className="mb-2 text-xs uppercase tracking-[0.2em] text-primary/75">Products Navigation</p>
             <h2 className="text-xl font-semibold text-foreground">Products</h2>
+            <label className="mt-4 block">
+              <span className="sr-only">Search products</span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search products..."
+                className="h-10 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-primary"
+              />
+            </label>
             <button
               type="button"
               onClick={() => selectItem('new')}
@@ -610,7 +654,7 @@ export default function AdminProductsManager({ items, upsertAction, deleteAction
           </div>
           <div className="max-h-[420px] overflow-y-auto p-3 lg:max-h-[calc(100vh-18rem)]">
             <div className="space-y-2">
-              {items.map((item) => (
+              {filteredItems.map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -629,6 +673,11 @@ export default function AdminProductsManager({ items, upsertAction, deleteAction
                   </div>
                 </button>
               ))}
+              {filteredItems.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+                  No products match your search.
+                </div>
+              ) : null}
             </div>
           </div>
         </aside>

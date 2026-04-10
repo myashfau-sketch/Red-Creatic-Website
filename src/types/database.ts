@@ -4,6 +4,7 @@ export interface GalleryItemRecord {
   title: string | null;
   image_url: string | null;
   alt_text: string | null;
+  search_attributes: string[] | null;
   service_tags: string[] | null;
   product_tags: string[] | null;
   is_published: boolean | null;

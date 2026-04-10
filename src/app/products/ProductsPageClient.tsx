@@ -3,10 +3,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import Header from '../../components/common/Header';
 import Footer from '../homepage/components/Footer';
-import Image from 'next/image';
 import Icon from '../../components/ui/AppIcon';
 import { PageHero, AnimatedSection } from '../../components/common/AnimatedSection';
 import type { Product } from '../../data/products';
+
+const getProductsBatchSize = (width: number) => (width >= 1024 ? 15 : 6);
 
 const shuffleProducts = (items: Product[]) => {
   const shuffled = [...items];
@@ -40,20 +41,55 @@ const ProductCard = ({
     setActiveImage(0);
   }, [product.id]);
 
+  const thumbnailImages = product.images.slice(1, 4);
+
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onClick();
+        }
+      }}
       className="w-full overflow-hidden rounded-2xl bg-card text-left shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={product.images[activeImage].src}
           alt={product.images[activeImage].alt}
-          fill
-          className="object-cover transition-all duration-500"
+          className="h-full w-full object-cover transition-all duration-500"
         />
       </div>
+
+      {thumbnailImages.length > 0 ? (
+        <div className="grid grid-cols-3 gap-1.5 px-2 pt-2 sm:px-3">
+          {thumbnailImages.map((image, index) => (
+            <button
+              key={`${product.id}-card-thumb-${index}`}
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                setActiveImage(index + 1);
+              }}
+              className={`relative overflow-hidden rounded-lg border transition-all duration-200 ${
+                activeImage === index + 1
+                  ? 'border-primary ring-2 ring-primary/20'
+                  : 'border-border/60 hover:border-primary/40'
+              }`}
+              aria-label={`Show ${product.name} image ${index + 2}`}
+            >
+              <div className="relative aspect-[4/3] w-full bg-surface">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <div className="flex flex-col items-center p-3 pt-2.5 text-center sm:p-4 sm:pt-3">
         {showCategory && product.category ? (
@@ -63,7 +99,7 @@ const ProductCard = ({
         ) : null}
         <h3 className="text-[13px] font-bold font-headline text-foreground sm:text-lg">{product.name}</h3>
       </div>
-    </button>
+    </div>
   );
 };
 
@@ -88,7 +124,7 @@ const ProductModal = ({ product, onClose }: { product: Product; onClose: () => v
     const interval = window.setInterval(() => {
       if (Date.now() < manualPauseUntil) return;
       setActiveImage((current) => (current + 1) % product.images.length);
-    }, 3500);
+    }, 3000);
 
     return () => window.clearInterval(interval);
   }, [manualPauseUntil, product.id, product.images.length]);
@@ -123,11 +159,11 @@ const ProductModal = ({ product, onClose }: { product: Product; onClose: () => v
         <div className="p-4 md:p-5">
           <div className="relative overflow-hidden rounded-[1.25rem] border border-border/60 bg-surface">
             <div className="relative aspect-[16/9] w-full">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={product.images[activeImage].src}
                 alt={product.images[activeImage].alt}
-                fill
-                className="object-contain bg-surface p-3"
+                className="h-full w-full object-contain bg-surface p-3"
               />
 
               {product.images.length > 1 && (
@@ -169,6 +205,36 @@ const ProductModal = ({ product, onClose }: { product: Product; onClose: () => v
               )}
             </div>
           </div>
+
+          {product.images.length > 1 ? (
+            <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6">
+              {product.images.map((image, index) => (
+                <button
+                  key={`${product.id}-thumb-${index}`}
+                  type="button"
+                  onClick={() => {
+                    setManualPauseUntil(Date.now() + 5000);
+                    setActiveImage(index);
+                  }}
+                  className={`relative overflow-hidden rounded-xl border transition-all duration-200 ${
+                    index === activeImage
+                      ? 'border-primary ring-2 ring-primary/25'
+                      : 'border-border/60 hover:border-primary/40'
+                  }`}
+                  aria-label={`Show image ${index + 1}`}
+                >
+                  <div className="relative aspect-[4/3] w-full bg-surface">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : null}
 
           <div className="mt-5 rounded-[1.25rem] border border-border/60 bg-surface p-4 md:p-5">
             <div className="flex flex-wrap items-center gap-3">
@@ -215,6 +281,8 @@ export default function ProductsPageClient({
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [batchSize, setBatchSize] = useState(6);
+  const [page, setPage] = useState(1);
 
   const filteredProducts = useMemo(
     () =>
@@ -234,9 +302,20 @@ export default function ProductsPageClient({
   );
 
   useEffect(() => {
+    const updateBatchSize = () => setBatchSize(getProductsBatchSize(window.innerWidth));
+    updateBatchSize();
+    window.addEventListener('resize', updateBatchSize);
+
+    return () => window.removeEventListener('resize', updateBatchSize);
+  }, []);
+
+  useEffect(() => {
     setIsHydrated(true);
     setProducts(shuffleProducts(filteredProducts));
+    setPage(1);
   }, [filteredProducts]);
+
+  const visibleProducts = products.slice(0, page * batchSize);
 
   return (
     <div className="min-h-screen bg-background">
@@ -318,7 +397,7 @@ export default function ProductsPageClient({
           </AnimatedSection>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-3 lg:grid-cols-5">
-            {products.map((product, idx) => (
+            {visibleProducts.map((product, idx) => (
               <AnimatedSection key={`${product.id}-${isHydrated ? idx : 'initial'}`} animation="fade-up" delay={idx * 80} className="h-full w-full">
                 <ProductCard
                   product={product}
@@ -328,6 +407,19 @@ export default function ProductsPageClient({
               </AnimatedSection>
             ))}
           </div>
+
+          {products.length > visibleProducts.length ? (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setPage((current) => current + 1)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+              >
+                Load More
+                <Icon name="ChevronDownIcon" size={16} />
+              </button>
+            </div>
+          ) : null}
 
           {products.length === 0 && (
             <div className="py-16 text-center">

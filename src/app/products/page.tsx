@@ -5,22 +5,43 @@ import type { ProductRecord } from '../../types/database';
 import ProductsPageClient from './ProductsPageClient';
 import { notFound } from 'next/navigation';
 
+function createProductPlaceholder(name: string) {
+  const label = encodeURIComponent(name.trim() || 'Product');
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f8fafc" />
+          <stop offset="100%" stop-color="#e5e7eb" />
+        </linearGradient>
+      </defs>
+      <rect width="800" height="600" fill="url(#bg)" rx="36" />
+      <rect x="46" y="46" width="708" height="508" rx="28" fill="#ffffff" stroke="#fecaca" />
+      <text x="400" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#111827">${decodeURIComponent(label)}</text>
+      <text x="400" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#dc2626">Red Creatic Product</text>
+    </svg>`
+  )}`;
+}
+
 function mapProductRecord(record: ProductRecord, index: number): Product | null {
-  if (!record.name || !record.description || !record.main_image_url) return null;
+  if (!record.name) return null;
 
   const galleryImages = (record.gallery_images ?? []).filter((image) => image?.src);
-  const mainImageAlt = record.main_image_alt || record.name;
+  const fallbackImage = galleryImages[0]?.src ?? null;
+  const mainImageUrl = record.main_image_url || fallbackImage || createProductPlaceholder(record.name);
+  const mainImageAlt = record.main_image_alt || galleryImages[0]?.alt || record.name;
 
   return {
     id: index + 1,
     name: record.name,
-    description: record.description,
+    description: record.description || '',
     category: record.category || undefined,
-    mainImage: record.main_image_url,
+    mainImage: mainImageUrl,
     mainImageAlt,
     images: galleryImages.length > 0
       ? galleryImages
-      : [{ src: record.main_image_url, alt: mainImageAlt }],
+      : [{ src: mainImageUrl, alt: mainImageAlt }],
   };
 }
 

@@ -49,7 +49,7 @@ function ClientEditor({ item, upsertAction, deleteAction, onDirtyChange, onSaved
     const { error: uploadError } = await supabase.storage
       .from(CLIENT_LOGO_BUCKET)
       .upload(filePath, selectedFile, {
-        cacheControl: '3600',
+        cacheControl: '31536000',
         upsert: false,
       });
 

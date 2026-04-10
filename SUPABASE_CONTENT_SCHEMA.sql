@@ -251,3 +251,6 @@ create policy "Allow authenticated delete testimonials"
 on public.testimonials for delete to authenticated using (true);
 create policy "Allow authenticated delete site_page_settings"
 on public.site_page_settings for delete to authenticated using (true);
+
+alter table public.gallery_items
+add column if not exists search_attributes text[] not null default '{}';

@@ -14,6 +14,10 @@ export async function upsertGalleryItem(formData: FormData) {
   const title = getTrimmedValue(formData.get('title'));
   const imageUrl = getTrimmedValue(formData.get('image_url'));
   const altText = getTrimmedValue(formData.get('alt_text'));
+  const searchAttributes = getTrimmedValue(formData.get('search_attributes'))
+    .split(/\r?\n|,/)
+    .map((value) => value.trim())
+    .filter(Boolean);
   const isPublished = formData.get('is_published') === 'on';
   const serviceTags = formData
     .getAll('service_tags')
@@ -26,6 +30,7 @@ export async function upsertGalleryItem(formData: FormData) {
     title: title || null,
     image_url: imageUrl || null,
     alt_text: altText || null,
+    search_attributes: searchAttributes,
     is_published: isPublished,
     service_tags: serviceTags,
     product_tags: productTags,
